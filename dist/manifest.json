@@ -1,0 +1,28 @@
+{
+  "name": "Brizo CRM",
+  "version": "1.0",
+  "description": "CRM с финансово-управленческим учетом",
+  "permissions": [
+    "storage",
+    "webRequest",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
+  ],
+  "host_permissions": [
+    "http://*/",
+    "https://*/"
+  ],
+  "icons": {
+    "16": "images/favicon-16x16.png",
+    "48": "images/favicon-32x32.png",
+    "128": "images/favicon-192x192.png"
+  },
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/favicon-32x32.png"
+  },
+  "manifest_version": 3
+}
