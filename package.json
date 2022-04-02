@@ -9,6 +9,9 @@
     "watch": "npm run local -- --watch"
   },
   "devDependencies": {
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+
     "cross-env": "^7.0.3",
     "laravel-mix": "^6.0.11",
     "postcss": "^8.2.10",
@@ -18,9 +21,70 @@
     "vue-loader": "^15.9.6",
     "vue-template-compiler": "^2.6.12",
     "vuex": "^3.4.0",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "prettier": "^2.2.1"
   },
   "dependencies": {
     "url-loader": "^4.1.1"
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown",
+      "git add --dry-run"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended",
+      "@vue/prettier"
+    ],
+    "rules": {
+      "no-prototype-builtins": "off",
+      "vue/no-v-html": "off",
+      "vue/max-attributes-per-line": [
+        "error",
+        {
+          "singleline": 6,
+          "multiline": 1
+        }
+      ],
+      "vue/component-name-in-template-casing": [
+        "error",
+        "kebab-case"
+      ],
+      "prettier/prettier": [
+        "warn",
+        {
+          "singleQuote": true,
+          "printWidth": 100
+        }
+      ]
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/*.spec.js"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   }
 }

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import store from '../store';
 
 const DOMAIN = 'brizo.ru/api';
 
@@ -17,7 +16,6 @@ export default {
         state[key] = updatedState[key];
       }
     },
-
   },
   getters: {
     user: (state) => state.currentUser,
@@ -27,12 +25,10 @@ export default {
     subDomain: (state, getters) => getters.project?.domain,
   },
   actions: {
-    async fetchUser({commit, getters, dispatch}, isSub) {
-      commit('set', {pending: true});
+    async fetchUser({ commit, getters, dispatch }, isSub = false) {
+      commit('set', { pending: true });
 
-      const route = isSub
-          ? `https://${getters.subDomain}.${DOMAIN}/me`
-          : `https://${DOMAIN}/me`;
+      const route = isSub ? `https://${getters.subDomain}.${DOMAIN}/me` : `https://${DOMAIN}/me`;
 
       try {
         const res = await Vue.http.get(route);
@@ -50,29 +46,34 @@ export default {
         return res.data;
       } catch (e) {
         if (e.response?.status === 401) {
-          commit('set', {isAuth: false});
+          commit('set', { isAuth: false });
         }
       } finally {
-        commit('set', {pending: false});
+        commit('set', { pending: false });
       }
-
     },
-    async fetchUnreadNotificationsCount({commit, getters}) {
-      const {data} = await Vue.http.get(
-          `https://${getters.subDomain}.${DOMAIN}/notifications/unread`);
+    async fetchUnreadNotificationsCount({ commit, getters }) {
+      const { data } = await Vue.http.get(
+        `https://${getters.subDomain}.${DOMAIN}/notifications/unread`
+      );
 
-      commit('set',
-          {unread_notifications_count: data.unread_notifications_count});
+      commit('set', {
+        unread_notifications_count: data.unread_notifications_count,
+      });
     },
 
-    async fetchTransactions({getters}) {
-      const {data} = await Vue.http.get(
-          `https://${getters.subDomain}.${DOMAIN}/transactions/table`, {
-            limit: 50,
-            offset: 0,
-            order_column: 'transacted_and_accured',
-            order_by: 'desc',
-          });
+    async fetchTransactions({ getters }) {
+      const { data } = await Vue.http.get(
+        `https://${getters.subDomain}.${DOMAIN}/transactions/table`,
+        {
+          limit: 50,
+          offset: 0,
+          order_column: 'transacted_and_accured',
+          order_by: 'desc',
+        }
+      );
+
+      return data;
     },
   },
 };
