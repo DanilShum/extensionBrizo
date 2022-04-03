@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from './store';
-import Popup from './components/Popup.vue';
+import ToolBar from './components/ToolBar.vue';
 import api from './plugins/axios';
 
 api();
@@ -8,5 +8,5 @@ api();
 new Vue({
   el: '#app',
   store,
-  render: (createElement) => createElement(Popup),
+  render: (createElement) => createElement(ToolBar),
 });

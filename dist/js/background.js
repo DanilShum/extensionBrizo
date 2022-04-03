@@ -8,23 +8,35 @@
 /***/ (() => {
 
 // when the extension is first installed, set default values
-// eslint-disable-next-line
-chrome.runtime.onInstalled.addListener(function () {// eslint-disable-next-line
-  // chrome.storage.sync.set(
-  //   {
-  //     toggleSitesActive: false,
-  //     toggleSitesList: 'example.com',
-  //   },
-  //   function () {}
-  // );
+var color = '#3aa757'; // eslint-disable-next-line
+
+chrome.runtime.onInstalled.addListener(function () {
+  // eslint-disable-next-line
+  chrome.storage.sync.set({
+    color: color
+  });
+  console.log('Default background color set to %cgreen', "color: ".concat(color));
 });
 
 /***/ }),
 
-/***/ "./assets/sass/popup.scss":
-/*!********************************!*\
-  !*** ./assets/sass/popup.scss ***!
-  \********************************/
+/***/ "./assets/sass/toolBar.scss":
+/*!**********************************!*\
+  !*** ./assets/sass/toolBar.scss ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./assets/sass/styles.scss":
+/*!*********************************!*\
+  !*** ./assets/sass/styles.scss ***!
+  \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -95,7 +107,8 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		
 /******/ 		var deferredModules = [
 /******/ 			["./assets/js/background.js"],
-/******/ 			["./assets/sass/popup.scss"]
+/******/ 			["./assets/sass/toolBar.scss"],
+/******/ 			["./assets/sass/styles.scss"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

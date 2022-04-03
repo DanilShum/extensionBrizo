@@ -9,7 +9,15 @@
     <spinner v-if="pending" :size="50" style="padding: 25px" />
     <div v-if="!isAuth">Вы не авторизированны</div>
 
-    <profile v-else-if="!pending" />
+    <div v-else-if="!pending" class="tool-bar__content">
+      <button @click="prevView">
+        <img src="images/angle-right.svg" alt="arrow" class="tool-bar__content__arrow-left" />
+      </button>
+      <component :is="viewComponent" />
+      <button @click="nextView">
+        <img src="images/angle-right.svg" alt="arrow" />
+      </button>
+    </div>
 
     <button type="button" class="link-button" @click="linkTo">Перейти в Brizo</button>
   </div>
@@ -18,29 +26,34 @@
 import { mapActions, mapState } from 'vuex';
 import Profile from './Profile';
 import Spinner from './Spinner';
+import Deals from '../view/deals/Deals';
 
 export default {
-  components: { Spinner, Profile },
-  data() {
-    return {
-      active: true,
-      list: 'example.com',
-      icons: {
-        active: 'images/icon-48x48.png',
-        inactive: 'images/icon-48x48-off.png',
-      },
-    };
-  },
-  created() {
+  name: 'ToolBar',
+  components: { Deals, Spinner, Profile },
+  data: () => ({
+    active: true,
+    list: 'example.com',
+    icons: {
+      active: 'images/icon-48x48.png',
+      inactive: 'images/icon-48x48-off.png',
+    },
+    activeViewIndex: 0,
+    views: [Profile, Deals],
+  }),
+  async created() {
     window.chrome.storage.sync.get(['toggleSitesActive', 'toggleSitesList'], (result) => {
       this.active = result.toggleSitesActive;
       this.list = result.toggleSitesList;
     });
-    this.fetchUser();
+    await this.fetchUser();
     this.fetchUnreadNotificationsCount();
   },
   computed: {
     ...mapState('user', ['pending', 'isAuth']),
+    viewComponent() {
+      return this.views[this.activeViewIndex];
+    },
   },
   methods: {
     ...mapActions('user', ['fetchUser', 'fetchUnreadNotificationsCount']),
@@ -68,6 +81,32 @@ export default {
         () => {}
       );
     },
+    prevView() {
+      const index = this.views.length - 1;
+      if (!this.activeViewIndex) {
+        this.activeViewIndex = index;
+      } else {
+        this.activeViewIndex = this.activeViewIndex - 1;
+      }
+    },
+    nextView() {
+      const index = this.views.length - 1;
+      if (index === this.activeViewIndex) {
+        this.activeViewIndex = 0;
+      } else {
+        this.activeViewIndex = this.activeViewIndex + 1;
+      }
+    },
   },
 };
 </script>
+<style lang="scss">
+.tool-bar__content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tool-bar__content__arrow-left {
+  transform: rotate(180deg);
+}
+</style>

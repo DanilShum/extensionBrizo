@@ -4,6 +4,8 @@
   "description": "CRM с финансово-управленческим учетом",
   "permissions": [
     "storage",
+    "activeTab",
+    "scripting",
     "webRequest",
     "declarativeNetRequest",
     "declarativeNetRequestFeedback"
@@ -20,8 +22,16 @@
   "background": {
     "service_worker": "js/background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "css": ["css/styles.css"],
+      "js": ["js/content.js"],
+      "run_at": "document_end"
+    }
+  ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "toolBar.html",
     "default_icon": "images/favicon-32x32.png"
   },
   "manifest_version": 3
