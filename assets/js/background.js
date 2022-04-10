@@ -1,57 +1,21 @@
 // when the extension is first installed, set default values
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({
-        toggleSitesActive: false,
-        toggleSitesList: 'example.com'
-    }, function() {});
+
+let color = '#3aa757';
+// eslint-disable-next-line
+chrome.runtime.onInstalled.addListener(() => {
+  // eslint-disable-next-line
+  chrome.storage.sync.set({ color });
+  console.log('Default background color set to %cgreen', `color: ${color}`);
 });
 
-// set up initial chrome storage values
-var toggleSitesActive = false;
-var toggleSitesList = 'example.com';
-
-chrome.storage.sync.get([
-    'toggleSitesActive',
-    'toggleSitesList'
-], function(result) {
-    toggleSitesActive = result.toggleSitesActive;
-    toggleSitesList = result.toggleSitesList;
+// eslint-disable-next-line
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    console.log(
+      `Storage key "${key}" in namespace "${namespace}" changed.`,
+      `Old value was "${oldValue}", new value is "${newValue}".`
+    );
+  }
 });
+// eslint-disable-next-line
 
-// on each site request, block if it's in toggleSitesList
-// chrome.webRequest.onBeforeRequest.addListener(
-//     function(details) {
-//         // if the toggle is inactive, don't block anything
-//         if (!toggleSitesActive) {
-//             return { cancel: false };
-//         }
-//
-//         // determine if the url is in toggleSitesList
-//         var cancel = toggleSitesList.split(/\n/)
-//             .some(site => {
-//                 var url = new URL(details.url);
-//
-//                 return Boolean(url.hostname.indexOf(site) !== -1);
-//             });
-//
-//         return { cancel: cancel };
-//     },
-//     {
-//         urls: ["<all_urls>"]
-//     },
-//     [
-//         "blocking"
-//     ]
-// );
-
-// any time a storage item is updated, update global variables
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-    if (namespace === 'sync') {
-        if (changes.toggleSitesActive) {
-            toggleSitesActive = changes.toggleSitesActive.newValue;
-        }
-        if (changes.toggleSitesList) {
-            toggleSitesList = changes.toggleSitesList.newValue;
-        }
-    }
-});

@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
-    <div class="profile__row profile__user ">
-      <img class="profile__avatar-user" :src="avatar" alt="аватар">
+    <div class="profile__row profile__user">
+      <img class="profile__avatar-user" :src="avatar" alt="аватар" />
       <div class="profile__user-info">
         <div>{{ currentUser.name }}</div>
         <div>{{ currentUser.email }}</div>
@@ -10,23 +10,20 @@
 
     <div class="profile__row">
       <div>Проект: {{ project.name }}</div>
-      <button
-        type="button"
-        class="profile__notifiaction"
-      >
-      <span
-        v-if="notificationsCount"
-        class="profile__notifiaction__unread_counter"
-        v-text="notificationsCount"
-      />
-        <img src="images/bell.svg" alt="bell"/>
+      <button type="button" class="profile__notifiaction">
+        <span
+          v-if="notificationsCount"
+          class="profile__notifiaction__unread_counter"
+          v-text="notificationsCount"
+        />
+        <img src="images/bell.svg" alt="bell" />
       </button>
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'Profile',
