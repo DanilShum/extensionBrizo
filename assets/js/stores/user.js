@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
-const DOMAIN = 'brizo.ru/api';
+// const DOMAIN = 'brizo.ru/api';
+const DOMAIN = 'ozlaalfa.ru/api';
 
 export default {
   namespaced: true,
@@ -9,12 +10,19 @@ export default {
     pending: false,
     unread_notifications_count: 0,
     isAuth: true,
+    deals: [],
+    contents: [],
+    isOpenedPopup: false,
   },
   mutations: {
     set(state, updatedState) {
       for (const key in updatedState) {
         state[key] = updatedState[key];
       }
+      console.log(state);
+    },
+    add(state, { key, value }) {
+      state[key].push(value);
     },
   },
   getters: {
@@ -23,6 +31,7 @@ export default {
     project: (state, getters) => getters.user.project,
     avatar: (state, getters) => getters.user.avatar_url,
     subDomain: (state, getters) => getters.project?.domain,
+    deals: (state) => state.deals,
   },
   actions: {
     async fetchUser({ commit, getters, dispatch }, isSub = false) {
@@ -74,6 +83,25 @@ export default {
       );
 
       return data;
+    },
+
+    async createDeal({ getters, state }) {
+      try {
+        const { data } = await Vue.http.post(`https://${getters.subDomain}.${DOMAIN}/deals`, {
+          budget: 0,
+          currency_id: getters.project.default_currency.id,
+          members: [getters.user.id],
+          name: 'Test with extension' + Math.floor(Math.random() * 10),
+          responsible_id: 41,
+          status_id: 4958, // надо воронки подтянуть
+        });
+
+        state.deals.push(data);
+
+        return data;
+      } catch (e) {
+        alert(e.response.message);
+      }
     },
   },
 };

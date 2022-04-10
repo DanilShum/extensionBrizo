@@ -5,15 +5,6 @@ body {
   color: #7f8c8d;
 }
 
-.popup__content {
-  display: flex;
-  justify-content: space-between;
-}
-
-.popup__content__arrow-left {
-  transform: rotate(180deg);
-}
-
 .link-button {
   color: #ffffff;
   height: 40px;
