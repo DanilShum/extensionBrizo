@@ -8,7 +8,10 @@
       <p>responsible_id: {{ deal.responsible_id }}</p>
     </div>
 
+    {{}}
+
     <button type="button" class="link-button" @click="createDeal">Создать сделку</button>
+    <button type="button" class="link-button" @click="inspection">Начать инспекцию</button>
   </div>
 </template>
 
@@ -25,6 +28,14 @@ export default {
   },
   methods: {
     ...mapActions('user', ['createDeal']),
+    inspection() {
+      console.log('inspect');
+      window.chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        window.chrome.tabs.sendMessage(tabs[0].id, { inspection: true }, function (response) {
+          console.log('tabs', response);
+        });
+      });
+    },
   },
 };
 </script>

@@ -19,6 +19,8 @@
       </button>
     </div>
 
+    {{ contents }}
+
     <button type="button" class="link-button" @click="linkTo">Перейти в Brizo</button>
   </div>
 </template>
@@ -42,44 +44,22 @@ export default {
     views: [Profile, Deals],
   }),
   async created() {
-    window.chrome.storage.sync.get(['toggleSitesActive', 'toggleSitesList'], (result) => {
-      this.active = result.toggleSitesActive;
-      this.list = result.toggleSitesList;
-    });
     await this.fetchUser();
     this.fetchUnreadNotificationsCount();
+    window.chrome.storage.sync.get(['contents'], function (e) {
+      console.log('GET',e);
+    });
   },
   computed: {
-    ...mapState('user', ['pending', 'isAuth']),
+    ...mapState('user', ['pending', 'isAuth', 'contents']),
     viewComponent() {
       return this.views[this.activeViewIndex];
     },
   },
   methods: {
     ...mapActions('user', ['fetchUser', 'fetchUnreadNotificationsCount']),
-    setActive(active) {
-      this.active = active;
-      window.chrome.storage.sync.set(
-        {
-          toggleSitesActive: active,
-        },
-        () => {}
-      );
-
-      window.chrome.browserAction.setIcon({
-        path: this.icons[active ? 'active' : 'inactive'],
-      });
-    },
     linkTo() {
       window.chrome.tabs.create({ url: 'https://brizo.ru/cabinet/login' });
-    },
-    saveList() {
-      window.chrome.storage.sync.set(
-        {
-          toggleSitesList: this.list,
-        },
-        () => {}
-      );
     },
     prevView() {
       const index = this.views.length - 1;

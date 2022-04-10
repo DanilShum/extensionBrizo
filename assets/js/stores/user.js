@@ -11,12 +11,18 @@ export default {
     unread_notifications_count: 0,
     isAuth: true,
     deals: [],
+    contents: [],
+    isOpenedPopup: false,
   },
   mutations: {
     set(state, updatedState) {
       for (const key in updatedState) {
         state[key] = updatedState[key];
       }
+      console.log(state);
+    },
+    add(state, { key, value }) {
+      state[key].push(value);
     },
   },
   getters: {

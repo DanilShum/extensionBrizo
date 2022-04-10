@@ -1,22 +1,21 @@
 .brizo-inspector {
   border: 1px solid gold;
-  background-color: rgba(#FFD700FF, 0.1);
+  background-color: rgba(255, 215, 0, 0.1);
   position: fixed !important;
   pointer-events: none !important;
   z-index: 999;
 }
 
-.brizo-extension {
-  & *:not(.brizo-inspector):not(.popup_brizo-inspector) {
-    cursor: pointer !important;
-  }
+.brizo-extension *:not(.brizo-inspector):not(.popup_brizo-inspector) {
+  cursor: pointer !important;
 }
+
 .link-button {
   color: #ffffff;
   height: 40px;
   font-size: 15px;
   display: block;
-  font-family: 'Brizo',Arial,sans-serif;
+  font-family: "Brizo", Arial, sans-serif;
   line-height: 0;
   font-weight: 500;
   border-width: 0;
@@ -26,11 +25,10 @@
   border-color: #b0b9c0;
   border-style: solid;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-
-  &:hover {
-    background-color: #006eff;
-    background-image: none;
-    border-color: #6e7a84;
-    color: #ffffff;
-  }
+}
+.link-button:hover {
+  background-color: #006eff;
+  background-image: none;
+  border-color: #6e7a84;
+  color: #ffffff;
 }
