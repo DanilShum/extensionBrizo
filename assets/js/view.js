@@ -33,9 +33,18 @@ window.chrome.storage.sync.get(['contents'], (state) => {
   }
 });
 
-window.chrome.storage.onChanged.addListener(function (changes) {
-  for (const key in changes) {
-    store.commit('user/set', { [key]: changes[key].newValue });
+// window.chrome.storage.onChanged.addListener(function (changes) {
+//   for (const key in changes) {
+//     store.commit('user/set', { [key]: changes[key].newValue });
+//   }
+// });
+
+window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
+  for (const key in req) {
+    store.commit('user/set', { [key]: req[key] });
+    window.chrome.storage.sync.set({ [key]: req[key] });
+
+    console.log(store.state, 'SETTT');
   }
 });
 

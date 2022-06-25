@@ -110,13 +110,15 @@ export default {
       const payload = {
         contents: this.contents,
         isOpenedPopup: false,
-        test: {
-          val: 1,
-        },
+        isInspection: false,
       };
-      for (const key in payload) {
-        this.$store.commit('user/setContent', { key, value: payload[key] });
-      }
+      window.chrome.runtime.sendMessage(payload, function (ret) {
+        if (!ret) {
+          console.log('Error send message ' + window.chrome.runtime.lastError);
+          return;
+        }
+        if (ret.ok === 'ok') console.log(ret.info);
+      });
     },
     startInspection() {
       this.appendInspectorElement();

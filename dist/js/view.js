@@ -2513,15 +2513,20 @@ _plugins_axios__WEBPACK_IMPORTED_MODULE_3__.default.interceptors.request.use( /*
   };
 }());
 window.chrome.storage.sync.get(['contents'], function (state) {
-  console.log(state, 'INIT STATE');
-
   for (var key in state) {
     _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', _defineProperty({}, key, state[key]));
   }
-});
-window.chrome.storage.onChanged.addListener(function (changes) {
-  for (var key in changes) {
-    _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', _defineProperty({}, key, changes[key].newValue));
+}); // window.chrome.storage.onChanged.addListener(function (changes) {
+//   for (const key in changes) {
+//     store.commit('user/set', { [key]: changes[key].newValue });
+//   }
+// });
+
+window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
+  for (var key in req) {
+    _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', _defineProperty({}, key, req[key]));
+    window.chrome.storage.sync.set(_defineProperty({}, key, req[key]));
+    console.log(_store__WEBPACK_IMPORTED_MODULE_1__.default.state, 'SETTT');
   }
 });
 new vue__WEBPACK_IMPORTED_MODULE_4__.default({
