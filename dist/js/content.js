@@ -32,7 +32,6 @@ window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
   _store__WEBPACK_IMPORTED_MODULE_0__.default.commit('user/set', {
     isOpenedPopup: req.inspection
   });
-  console.log('clcik');
 
   if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.user.isOpenedPopup && !document.getElementById('brizo-extension')) {
     var body = document.querySelector('body');
@@ -496,17 +495,16 @@ var POPUP_TOP = 20;
       var payload = {
         contents: this.contents,
         isOpenedPopup: false,
-        test: {
-          val: 1
-        }
+        isInspection: false
       };
+      window.chrome.runtime.sendMessage(payload, function (ret) {
+        if (!ret) {
+          console.log('Error send message ' + window.chrome.runtime.lastError);
+          return;
+        }
 
-      for (var key in payload) {
-        this.$store.commit('user/setContent', {
-          key: key,
-          value: payload[key]
-        });
-      }
+        if (ret.ok === 'ok') console.log(ret.info);
+      });
     },
     startInspection: function startInspection() {
       this.appendInspectorElement();
