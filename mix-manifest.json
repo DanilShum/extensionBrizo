@@ -1,9 +1,7 @@
 {
-    "/dist/js/background.js": "/dist/js/background.js",
     "/dist/js/content.js": "/dist/js/content.js",
-    "/dist/js/toolBar.js": "/dist/js/toolBar.js",
+    "/dist/js/view.js": "/dist/js/view.js",
     "/dist/css/styles.css": "/dist/css/styles.css",
-    "/dist/css/toolBar.css": "/dist/css/toolBar.css",
     "/dist/images/angle-right.svg": "/dist/images/angle-right.svg",
     "/dist/images/bell.svg": "/dist/images/bell.svg",
     "/dist/images/favicon-16x16.png": "/dist/images/favicon-16x16.png",

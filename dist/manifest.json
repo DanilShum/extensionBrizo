@@ -20,7 +20,7 @@
     "128": "images/favicon-192x192.png"
   },
   "background": {
-    "service_worker": "js/background.js"
+    "service_worker": "js/view.js"
   },
   "content_scripts": [
     {
@@ -31,7 +31,7 @@
     }
   ],
   "action": {
-    "default_popup": "toolBar.html",
+    "default_popup": "view.html",
     "default_icon": "images/favicon-32x32.png"
   },
   "manifest_version": 3

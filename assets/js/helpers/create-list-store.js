@@ -23,6 +23,7 @@ export const createListStore = ({
   modules,
   namespaced: true,
   state: {
+    ids: [],
     ...state,
   },
   getters: {
@@ -56,16 +57,12 @@ export const createListStore = ({
     async create({ commit }, model) {
       const { data } = await Vue.http.post(entity, adapter(model));
 
-      const { entities, id } = data;
+      commit('add', data.id);
 
-      commit('entities/set', entities, { root: true });
-      commit('add', id);
-
-      return id;
+      return data;
     },
     async delete({ commit }, id) {
       await Vue.http.delete(`${entity}/${id}`);
-      commit('entities/del', { entity, id }, { root: true });
       commit('del', id);
     },
     ...actions,

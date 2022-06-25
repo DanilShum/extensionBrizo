@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import store from './store';
 import Popup from './components/Popup/Popup';
+import '../sass/styles.scss';
 
 window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
-  console.log(req);
   store.commit('user/set', { isOpenedPopup: req.inspection });
 
   if (store.state.user.isOpenedPopup && !document.getElementById('brizo-extension')) {

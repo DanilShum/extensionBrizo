@@ -31,7 +31,6 @@ export default {
     ...mapState('user', ['currentUser', 'unread_notifications_count']),
     ...mapGetters('user', ['avatar', 'project']),
     notificationsCount() {
-      console.log(this.unread_notifications_count);
       if (this.unread_notifications_count > 999) return '999+';
       if (this.unread_notifications_count <= 0) return 0;
       return this.unread_notifications_count;

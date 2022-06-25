@@ -1,39 +1,39 @@
 <template>
   <div class="deals">
     СДЕЛКИ
-    <div v-for="deal in deals" :key="deal.id" class="deals__item">
-      <p>budget: {{ deal.budget }}</p>
-      <p>currency: {{ deal.currency.code }}</p>
-      <p>name: {{ deal.name }}</p>
-      <p>responsible_id: {{ deal.responsible_id }}</p>
+    <div v-for="(deal, index) in contents" :key="index" class="deals__item">
+      <div>
+        <p>Бюджет: {{ deal.budget }}</p>
+        <p>Название: {{ deal.name }}</p>
+        <p>Описание: {{ deal.description }}</p>
+      </div>
+      <base-button text="Убрать" @click="removeContents(index)" />
     </div>
 
-    {{}}
-
-    <button type="button" class="link-button" @click="createDeal">Создать сделку</button>
-    <button type="button" class="link-button" @click="inspection">Начать инспекцию</button>
+    <base-button v-if="contents.length" type="button" text="Создать сделки" @click="createDeals" />
+    <base-button type="button" text="Начать инспекцию" @click="inspection" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters, mapState, mapActions, mapMutations } from 'vuex';
+import BaseButton from '../../components/buttons/BaseButton';
 
 export default {
   name: 'Deals',
-  components: {},
+  components: { BaseButton },
   props: {},
   data: () => ({}),
   computed: {
     ...mapGetters('user', ['deals']),
+    ...mapState('user', ['contents']),
   },
   methods: {
-    ...mapActions('user', ['createDeal']),
+    ...mapActions('user', ['createDeals']),
+    ...mapMutations('user', ['removeContents']),
     inspection() {
-      console.log('inspect');
       window.chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        window.chrome.tabs.sendMessage(tabs[0].id, { inspection: true }, function (response) {
-          console.log('tabs', response);
-        });
+        window.chrome.tabs.sendMessage(tabs[0].id, { inspection: true });
       });
     },
   },
@@ -46,7 +46,10 @@ export default {
   flex-direction: column;
 }
 .deals__item {
-  border: 1px solid gray;
-  margin-bottom: 4px;
+  display: flex;
+  box-shadow: 0 4px 4px 1px rgba(0, 11, 34, 0.17);
+  margin: 4px;
+  border-radius: 5px;
+  padding: 8px;
 }
 </style>
