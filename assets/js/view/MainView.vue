@@ -1,41 +1,33 @@
 <template>
   <div class="wrapper">
-    <img
-      src="https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg"
-      alt="Лого"
-    />
-    <h1 class="title">Brizo CRM</h1>
-
-    <spinner v-if="pending" :size="50" style="padding: 25px" />
-    <div v-if="!isAuth">Вы не авторизированны</div>
-
-    <div v-else-if="!pending" class="tool-bar__content">
-      <button @click="prevView">
-        <img src="images/angle-right.svg" alt="arrow" class="tool-bar__content__arrow-left" />
-      </button>
+    <div class="main-view__content">
+      <base-button @click="prevView">
+        <img
+          slot="center"
+          src="images/angle-right.svg"
+          alt="arrow"
+          class="main-view__content__arrow-left"
+        />
+      </base-button>
       <component :is="viewComponent" />
-      <button @click="nextView">
-        <img src="images/angle-right.svg" alt="arrow" />
-      </button>
+      <base-button @click="nextView">
+        <img slot="center" src="images/angle-right.svg" alt="arrow" />
+      </base-button>
     </div>
-
-    {{ contents }}
-
-    <button type="button" class="link-button" @click="linkTo">Перейти в Brizo</button>
   </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex';
-import Profile from './Profile';
-import Spinner from './Spinner';
-import Deals from '../view/deals/Deals';
+import Profile from '../components/Profile';
+import Spinner from '../components/Spinner';
+import Deals from './deals/Deals';
+import BaseButton from '../components/buttons/BaseButton';
 
 export default {
-  name: 'ToolBar',
-  components: { Deals, Spinner, Profile },
+  name: 'MainView',
+  components: { BaseButton, Deals, Spinner, Profile },
   data: () => ({
     active: true,
-    list: 'example.com',
     icons: {
       active: 'images/icon-48x48.png',
       inactive: 'images/icon-48x48-off.png',
@@ -46,21 +38,15 @@ export default {
   async created() {
     await this.fetchUser();
     this.fetchUnreadNotificationsCount();
-    window.chrome.storage.sync.get(['contents'], function (e) {
-      console.log('GET',e);
-    });
   },
   computed: {
-    ...mapState('user', ['pending', 'isAuth', 'contents']),
+    ...mapState('user', ['contents']),
     viewComponent() {
       return this.views[this.activeViewIndex];
     },
   },
   methods: {
     ...mapActions('user', ['fetchUser', 'fetchUnreadNotificationsCount']),
-    linkTo() {
-      window.chrome.tabs.create({ url: 'https://brizo.ru/cabinet/login' });
-    },
     prevView() {
       const index = this.views.length - 1;
       if (!this.activeViewIndex) {
@@ -81,12 +67,12 @@ export default {
 };
 </script>
 <style lang="scss">
-.tool-bar__content {
+.main-view__content {
   display: flex;
   justify-content: space-between;
 }
 
-.tool-bar__content__arrow-left {
+.main-view__content__arrow-left {
   transform: rotate(180deg);
 }
 </style>

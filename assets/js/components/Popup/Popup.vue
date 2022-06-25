@@ -1,41 +1,59 @@
 <template>
-  <div class="popup popup_brizo-inspector" :style="{ transform: translate }">
-    <div class="popup_brizo-inspector__drag" @mousedown="startDrag" />
-    <img
-      src="https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg"
-      alt="Лого"
-    />
-    <h1 class="title">Brizo CRM</h1>
-    <div class="popup__inner">
-      <div>То что накликали</div>
-      <div class="popup__content-item" v-for="(text, i) in contents" :key="i">
-        {{ text }}
-      </div>
-    </div>
-    <button type="button" class="link-button" @click="createDeal">Создать сделку</button>
-    <button type="button" class="link-button" @click="setInspection(!isInspection)">
-      {{ isInspection ? 'остановить инспекцию' : 'начать инспекцию' }}
-    </button>
+  <div id="brizo-extension" class="brizo-popup-wrapper">
+    <div class="brizo-popup brizo-popup_inspector" :style="{ transform: translate }">
+      <header class="brizo-popup__header">
+        <div class="brizo-popup__drag" @mousedown="startDrag" />
+        <img
+          src="https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg"
+          alt="Лого"
+        />
+      </header>
+      <section class="brizo-popup__content">
+        <div v-if="contents.length" class="brizo-popup__row">
+          <div class="brizo-popup__sub-title">Сделки для создания сделки:</div>
+          <tags :items="contents.map((item) => item.name)" />
+        </div>
+        <div class="brizo-popup__row">
+          <div class="brizo-popup__sub-title">Выбранные параметры сделки:</div>
 
-    <select
-      v-show="false"
-      id="brizo-inspector__select"
-      class="brizo-inspector__select"
-      size="3"
-      multiple
-      name="hero[]"
-    >
-      <option disabled>Выберите героя</option>
-      <option value="Чебурашка">Чебурашка</option>
-      <option selected value="Крокодил Гена">Крокодил Гена</option>
-      <option value="Шапокляк">Шапокляк</option>
-      <option value="Крыса Лариса">Крыса Лариса</option>
-    </select>
+          <div class="brizo-popup__tag" v-if="element.name">
+            <strong>Название:</strong> {{ element.name }}
+          </div>
+          <div class="brizo-popup__tag" v-if="element.budget">
+            <strong>Бюджет:</strong> {{ element.budget }}
+          </div>
+          <div class="brizo-popup__tag" v-if="element.description">
+            <strong>Описание:</strong> {{ element.description }}
+          </div>
+        </div>
+
+        <base-button
+          v-if="element.name"
+          text="Преобразовать в краточку для создания"
+          @click="setDeal"
+        />
+      </section>
+      <footer class="brizo-popup__actions">
+        <base-button
+          :text="isInspection ? 'остановить инспекцию' : 'начать инспекцию'"
+          @click="setInspection(!isInspection)"
+        />
+      </footer>
+    </div>
+    <div id="brizo-inspector__select" class="brizo-inspector__select-wrapper" :style="selectStyle">
+      <select class="brizo-inspector__select" multiple name="hero[]" @change="selectParam">
+        <option value="name">Название сделки</option>
+        <option value="description">Описание сделки</option>
+        <option value="budget">Бюджет сделки</option>
+      </select>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
+import BaseButton from '../buttons/BaseButton';
+import Tags from '../Tags';
 
 const POPUP_WIDTH = 300;
 const POPUP_HEIGHT = 400;
@@ -44,13 +62,22 @@ const POPUP_TOP = 20;
 
 export default {
   name: 'Popup',
-  components: {},
+  components: { Tags, BaseButton },
   props: {},
   data: () => ({
     contents: [],
+    element: {},
     y: 0,
     x: 0,
     translate: `translate3d(0px,0px,0px)`,
+    targetContent: '',
+    selectStyle: {
+      opacity: '0',
+      left: 0,
+      top: 0,
+      height: 0,
+      width: 0,
+    },
     isInspection: false,
   }),
   created() {
@@ -67,22 +94,29 @@ export default {
   },
   methods: {
     ...mapMutations('user', ['add']),
+    ...mapActions('user', ['createDeals']),
     setInspection(value) {
       value ? this.startInspection() : this.stopInspection();
       this.isInspection = value;
     },
+    setDeal() {
+      if (this.element.name) {
+        this.contents.push(this.element);
+        this.element = {};
+        this.createDeal();
+      }
+    },
     createDeal() {
-      window.chrome.runtime.sendMessage(
-        { contents: this.contents, isInspection: false },
-        function (ret) {
-          if (!ret) {
-            console.log('Error send message ' + window.chrome.runtime.lastError);
-            return;
-          }
-          if (ret.ok === 'ok') console.log(ret.info);
-        }
-      );
-      this.setInspection(false);
+      const payload = {
+        contents: this.contents,
+        isOpenedPopup: false,
+        test: {
+          val: 1,
+        },
+      };
+      for (const key in payload) {
+        this.$store.commit('user/setContent', { key, value: payload[key] });
+      }
     },
     startInspection() {
       this.appendInspectorElement();
@@ -97,13 +131,16 @@ export default {
       document.removeEventListener('click', this.clickPageElement, true);
 
       this.removeInspectorElement();
+      this.selectStyle.opacity = '0';
     },
     hoverPageElement(e) {
       const el = e.target;
       if (
         el &&
-        el.className !== 'popup popup_brizo-inspector' &&
-        el.offsetParent?.className !== 'popup popup_brizo-inspector'
+        el.className !== 'brizo-popup brizo-popup_inspector' &&
+        el.className !== 'brizo-popup brizo-inspector__select-wrapper' &&
+        el.offsetParent?.className !== 'brizo-popup brizo-popup_inspector' &&
+        el.offsetParent?.className !== 'brizo-popup brizo-inspector__select-wrapper'
       ) {
         const { left, top, height, width } = el.getBoundingClientRect();
         this.inspector.style.left = left + 'px';
@@ -124,26 +161,33 @@ export default {
       body.appendChild(this.inspector);
     },
     removeInspectorElement() {
-      document.getElementById('brizo-inspector').remove();
+      document.getElementById('brizo-inspector')?.remove();
     },
     clickPageElement(e) {
-      if (e.target.offsetParent?.className === 'popup popup_brizo-inspector') return;
+      if (
+        e.target.offsetParent?.className === 'brizo-popup brizo-popup_inspector' ||
+        e.target.offsetParent?.className === 'brizo-inspector__select-wrapper'
+      )
+        return;
       e.preventDefault();
       e.stopPropagation();
       const el = e.target;
-      if (el.textContent) {
-        this.contents.push(el.textContent);
 
-        // console.log(this.inspectorSelect);
-        // e.target.appendChild(this.inspectorSelect);
-        //
-        // const { left, top, height, width } = el.getBoundingClientRect();
-        // this.inspectorSelect.style.left = left + 'px';
-        // this.inspectorSelect.style.top = top + 'px';
-        // this.inspectorSelect.style.height = height + 'px';
-        // this.inspectorSelect.style.width = width + 'px';
+      if (el.textContent) {
+        this.targetContent = el.textContent;
+        const { left, bottom } = el.getBoundingClientRect();
+        this.selectStyle = {
+          opacity: '1',
+          left: left + 'px',
+          top: bottom + 'px',
+        };
       }
       return false;
+    },
+    selectParam(e) {
+      this.element[e.target.value] = this.targetContent;
+      this.selectStyle.opacity = '0';
+      this.targetContent = '';
     },
     startDrag(event) {
       const { pageY, pageX, target } = event;
@@ -190,27 +234,35 @@ export default {
 </script>
 
 <style lang="scss">
-.popup {
+.brizo-popup-wrapper {
+  font-size: 12px;
+  color: #353d43;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+.brizo-popup {
   width: 300px;
   box-sizing: border-box;
   height: 400px;
   background-color: white;
   box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);
+  border-radius: 5px;
   position: fixed;
   top: 60px;
   right: 100px;
   z-index: 1000;
   padding: 10px;
 }
-.popup__inner {
-  height: calc(100% - 140px);
+.brizo-popup__content {
+  height: calc(100% - 70px);
   overflow: auto;
 }
-.popup__content-item {
-  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.07);
-  margin: 4px;
+.brizo-popup__actions {
+  display: flex;
 }
-.popup_brizo-inspector__drag {
+.brizo-popup__drag {
   top: 0;
   left: 0;
   right: 0;
@@ -222,10 +274,35 @@ export default {
   border-bottom-right-radius: 5px;
   background-color: #e74c3c;
 }
-.brizo-inspector__select {
-  position: absolute;
+.brizo-inspector__select-wrapper {
+  min-width: 150px;
+  min-height: 80px;
+  opacity: 0;
+  position: fixed;
   bottom: 0;
   left: 0;
   z-index: 999;
+}
+.brizo-inspector__select {
+}
+
+.brizo-popup__row {
+  display: flex;
+  flex-direction: column;
+}
+
+.brizo-popup__sub-title {
+  color: #5f6c76;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.brizo-popup__tag {
+  display: inline-block;
+  min-height: 16px;
+  background-color: rgba(111, 111, 234, 0.1);
+  border-radius: 5px;
+  margin-bottom: 4px;
+  padding: 4px;
 }
 </style>
