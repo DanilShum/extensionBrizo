@@ -1,28 +1,33 @@
 <template>
-  <div id="brizo-extension" class="brizo-popup-wrapper">
-    <div class="brizo-popup brizo-popup_inspector" :style="{ transform: translate }">
-      <header class="brizo-popup__header">
-        <div class="brizo-popup__drag" @mousedown="startDrag" />
+  <div
+    id="brizo-extension"
+    class="brizo-extension-wrapper"
+    :class="{ 'brizo-extension-wrapper_hide': hideInspector }"
+  >
+    <div class="brizo-extension brizo-extension_inspector" :style="{ transform: translate }">
+      <header class="brizo-extension__header">
+        <div class="brizo-extension__drag" @mousedown="startDrag" />
         <img
           src="https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg"
           alt="Лого"
         />
+        <base-button text="Close" @click="closeInspector" />
       </header>
-      <section class="brizo-popup__content">
-        <div v-if="contents.length" class="brizo-popup__row">
-          <div class="brizo-popup__sub-title">Сделки для создания сделки:</div>
+      <section class="brizo-extension__content">
+        <div v-if="contents.length" class="brizo-extension__row">
+          <div class="brizo-extension__sub-title">Сделки для создания сделки:</div>
           <tags :items="contents.map((item) => item.name)" />
         </div>
-        <div class="brizo-popup__row">
-          <div class="brizo-popup__sub-title">Выбранные параметры сделки:</div>
+        <div class="brizo-extension__row">
+          <div class="brizo-extension__sub-title">Выбранные параметры сделки:</div>
 
-          <div class="brizo-popup__tag" v-if="element.name">
+          <div class="brizo-extension__tag" v-if="element.name">
             <strong>Название:</strong> {{ element.name }}
           </div>
-          <div class="brizo-popup__tag" v-if="element.budget">
+          <div class="brizo-extension__tag" v-if="element.budget">
             <strong>Бюджет:</strong> {{ element.budget }}
           </div>
-          <div class="brizo-popup__tag" v-if="element.description">
+          <div class="brizo-extension__tag" v-if="element.description">
             <strong>Описание:</strong> {{ element.description }}
           </div>
         </div>
@@ -33,7 +38,7 @@
           @click="setDeal"
         />
       </section>
-      <footer class="brizo-popup__actions">
+      <footer class="brizo-extension__actions">
         <base-button
           :text="isInspection ? 'остановить инспекцию' : 'начать инспекцию'"
           @click="setInspection(!isInspection)"
@@ -87,14 +92,24 @@ export default {
     this.stopInspection();
   },
   computed: {
-    ...mapState('user', ['isOpenedPopup']),
+    ...mapState('user', ['isOpenedPopup', 'hideInspector']),
     inspectorSelect() {
       return document.getElementById('brizo-inspector__select') || null;
     },
   },
   methods: {
-    ...mapMutations('user', ['add']),
+    ...mapMutations('user', ['add', 'set']),
     ...mapActions('user', ['createDeals']),
+    closeInspector() {
+      this.set({ hideInspector: true });
+      window.chrome.runtime.sendMessage({ hideInspector: true }, function (ret) {
+        if (!ret) {
+          console.log('Error send message ' + window.chrome.runtime.lastError);
+          return;
+        }
+        if (ret.ok === 'ok') console.log(ret.info);
+      });
+    },
     setInspection(value) {
       value ? this.startInspection() : this.stopInspection();
       this.isInspection = value;
@@ -123,7 +138,7 @@ export default {
     startInspection() {
       this.appendInspectorElement();
       const body = document.querySelector('body');
-      body.classList.add('brizo-extension');
+      body.classList.add('brizo-crm-extension');
 
       document.addEventListener('mouseover', this.hoverPageElement);
       document.addEventListener('click', this.clickPageElement, true);
@@ -139,10 +154,10 @@ export default {
       const el = e.target;
       if (
         el &&
-        el.className !== 'brizo-popup brizo-popup_inspector' &&
-        el.className !== 'brizo-popup brizo-inspector__select-wrapper' &&
-        el.offsetParent?.className !== 'brizo-popup brizo-popup_inspector' &&
-        el.offsetParent?.className !== 'brizo-popup brizo-inspector__select-wrapper'
+        el.className !== 'brizo-extension brizo-extension_inspector' &&
+        el.className !== 'brizo-extension brizo-inspector__select-wrapper' &&
+        el.offsetParent?.className !== 'brizo-extension brizo-extension_inspector' &&
+        el.offsetParent?.className !== 'brizo-extension brizo-inspector__select-wrapper'
       ) {
         const { left, top, height, width } = el.getBoundingClientRect();
         this.inspector.style.left = left + 'px';
@@ -167,7 +182,7 @@ export default {
     },
     clickPageElement(e) {
       if (
-        e.target.offsetParent?.className === 'brizo-popup brizo-popup_inspector' ||
+        e.target.offsetParent?.className === 'brizo-extension brizo-extension_inspector' ||
         e.target.offsetParent?.className === 'brizo-inspector__select-wrapper'
       )
         return;
@@ -236,7 +251,10 @@ export default {
 </script>
 
 <style lang="scss">
-.brizo-popup-wrapper {
+.brizo-extension-wrapper_hide {
+  opacity: 0;
+}
+.brizo-extension-wrapper {
   font-size: 12px;
   color: #353d43;
 
@@ -244,7 +262,7 @@ export default {
     box-sizing: border-box;
   }
 }
-.brizo-popup {
+.brizo-extension {
   width: 300px;
   box-sizing: border-box;
   height: 400px;
@@ -257,14 +275,18 @@ export default {
   z-index: 1000;
   padding: 10px;
 }
-.brizo-popup__content {
+.brizo-extension__header {
+  display: flex;
+  justify-content: space-between;
+}
+.brizo-extension__content {
   height: calc(100% - 70px);
   overflow: auto;
 }
-.brizo-popup__actions {
+.brizo-extension__actions {
   display: flex;
 }
-.brizo-popup__drag {
+.brizo-extension__drag {
   top: 0;
   left: 0;
   right: 0;
@@ -288,18 +310,18 @@ export default {
 .brizo-inspector__select {
 }
 
-.brizo-popup__row {
+.brizo-extension__row {
   display: flex;
   flex-direction: column;
 }
 
-.brizo-popup__sub-title {
+.brizo-extension__sub-title {
   color: #5f6c76;
   font-size: 13px;
   font-weight: 500;
 }
 
-.brizo-popup__tag {
+.brizo-extension__tag {
   display: inline-block;
   min-height: 16px;
   background-color: rgba(111, 111, 234, 0.1);

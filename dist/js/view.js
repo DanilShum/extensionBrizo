@@ -2203,7 +2203,8 @@ var DOMAIN = 'ozlaalfa.ru/api';
     unread_notifications_count: 0,
     deals: [],
     contents: [],
-    isOpenedPopup: false
+    isOpenedPopup: false,
+    hideInspector: false
   },
   mutations: {
     set: function set(state, updatedState) {
@@ -2512,7 +2513,9 @@ _plugins_axios__WEBPACK_IMPORTED_MODULE_3__.default.interceptors.request.use( /*
     return _ref2.apply(this, arguments);
   };
 }());
-window.chrome.storage.sync.get(['contents'], function (state) {
+window.chrome.storage.sync.get(['contents', 'isOpenedPopup', 'hideInspector'], function (state) {
+  console.log('INIT', state);
+
   for (var key in state) {
     _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', _defineProperty({}, key, state[key]));
   }
@@ -2940,8 +2943,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {};
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', ['deals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)('user', ['contents'])),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('user', ['createDeals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapMutations)('user', ['removeContents'])), {}, {
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', ['deals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)('user', ['contents', 'hideInspector', 'isOpenedPopup'])), {}, {
+    inspectionButtonText: function inspectionButtonText() {
+      return this.isOpenedPopup || !this.hideInspector ? 'Остановить инспекцию' : 'Начать инспекцию';
+    }
+  }),
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('user', ['createDeals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapMutations)('user', ['removeContents', 'set'])), {}, {
     inspection: function inspection() {
       window.chrome.tabs.query({
         active: true,
@@ -2951,6 +2958,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           inspection: true
         });
       });
+
+      if (!this.isOpenedPopup) {
+        window.chrome.storage.sync.set({
+          isOpenedPopup: true
+        });
+      } else {
+        window.chrome.storage.sync.set({
+          hideInspector: !this.hideInspector
+        });
+      }
+
+      window.close();
     }
   })
 });
@@ -5505,7 +5524,7 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _c("base-button", {
-        attrs: { type: "button", text: "Начать инспекцию" },
+        attrs: { type: "button", text: _vm.inspectionButtonText },
         on: { click: _vm.inspection }
       })
     ],

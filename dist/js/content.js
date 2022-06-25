@@ -32,8 +32,15 @@ window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
   _store__WEBPACK_IMPORTED_MODULE_0__.default.commit('user/set', {
     isOpenedPopup: req.inspection
   });
+  var extension = document.getElementById('brizo-extension');
 
-  if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.user.isOpenedPopup && !document.getElementById('brizo-extension')) {
+  if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.user.isOpenedPopup && extension) {
+    _store__WEBPACK_IMPORTED_MODULE_0__.default.commit('user/set', {
+      hideInspector: !_store__WEBPACK_IMPORTED_MODULE_0__.default.state.user.hideInspector
+    });
+  }
+
+  if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.user.isOpenedPopup && !extension) {
     var body = document.querySelector('body');
     var brizoInner = document.createElement('div');
     brizoInner.setAttribute('id', 'brizo-extension');
@@ -152,7 +159,8 @@ var DOMAIN = 'ozlaalfa.ru/api';
     unread_notifications_count: 0,
     deals: [],
     contents: [],
-    isOpenedPopup: false
+    isOpenedPopup: false,
+    hideInspector: false
   },
   mutations: {
     set: function set(state, updatedState) {
@@ -436,6 +444,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -474,12 +487,27 @@ var POPUP_TOP = 20;
   beforeDestroy: function beforeDestroy() {
     this.stopInspection();
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)('user', ['isOpenedPopup'])), {}, {
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)('user', ['isOpenedPopup', 'hideInspector'])), {}, {
     inspectorSelect: function inspectorSelect() {
       return document.getElementById('brizo-inspector__select') || null;
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)('user', ['add'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)('user', ['createDeals'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)('user', ['add', 'set'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)('user', ['createDeals'])), {}, {
+    closeInspector: function closeInspector() {
+      this.set({
+        hideInspector: true
+      });
+      window.chrome.runtime.sendMessage({
+        hideInspector: true
+      }, function (ret) {
+        if (!ret) {
+          console.log('Error send message ' + window.chrome.runtime.lastError);
+          return;
+        }
+
+        if (ret.ok === 'ok') console.log(ret.info);
+      });
+    },
     setInspection: function setInspection(value) {
       value ? this.startInspection() : this.stopInspection();
       this.isInspection = value;
@@ -509,7 +537,7 @@ var POPUP_TOP = 20;
     startInspection: function startInspection() {
       this.appendInspectorElement();
       var body = document.querySelector('body');
-      body.classList.add('brizo-extension');
+      body.classList.add('brizo-crm-extension');
       document.addEventListener('mouseover', this.hoverPageElement);
       document.addEventListener('click', this.clickPageElement, true);
     },
@@ -524,7 +552,7 @@ var POPUP_TOP = 20;
 
       var el = e.target;
 
-      if (el && el.className !== 'brizo-popup brizo-popup_inspector' && el.className !== 'brizo-popup brizo-inspector__select-wrapper' && ((_el$offsetParent = el.offsetParent) === null || _el$offsetParent === void 0 ? void 0 : _el$offsetParent.className) !== 'brizo-popup brizo-popup_inspector' && ((_el$offsetParent2 = el.offsetParent) === null || _el$offsetParent2 === void 0 ? void 0 : _el$offsetParent2.className) !== 'brizo-popup brizo-inspector__select-wrapper') {
+      if (el && el.className !== 'brizo-extension brizo-extension_inspector' && el.className !== 'brizo-extension brizo-inspector__select-wrapper' && ((_el$offsetParent = el.offsetParent) === null || _el$offsetParent === void 0 ? void 0 : _el$offsetParent.className) !== 'brizo-extension brizo-extension_inspector' && ((_el$offsetParent2 = el.offsetParent) === null || _el$offsetParent2 === void 0 ? void 0 : _el$offsetParent2.className) !== 'brizo-extension brizo-inspector__select-wrapper') {
         var _el$getBoundingClient = el.getBoundingClientRect(),
             left = _el$getBoundingClient.left,
             top = _el$getBoundingClient.top,
@@ -555,7 +583,7 @@ var POPUP_TOP = 20;
     clickPageElement: function clickPageElement(e) {
       var _e$target$offsetParen, _e$target$offsetParen2;
 
-      if (((_e$target$offsetParen = e.target.offsetParent) === null || _e$target$offsetParen === void 0 ? void 0 : _e$target$offsetParen.className) === 'brizo-popup brizo-popup_inspector' || ((_e$target$offsetParen2 = e.target.offsetParent) === null || _e$target$offsetParen2 === void 0 ? void 0 : _e$target$offsetParen2.className) === 'brizo-inspector__select-wrapper') return;
+      if (((_e$target$offsetParen = e.target.offsetParent) === null || _e$target$offsetParen === void 0 ? void 0 : _e$target$offsetParen.className) === 'brizo-extension brizo-extension_inspector' || ((_e$target$offsetParen2 = e.target.offsetParent) === null || _e$target$offsetParen2 === void 0 ? void 0 : _e$target$offsetParen2.className) === 'brizo-inspector__select-wrapper') return;
       e.preventDefault();
       e.stopPropagation();
       var el = e.target;
@@ -699,7 +727,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".brizo-popup-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-popup-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-popup {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n  position: fixed;\n  top: 60px;\n  right: 100px;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-popup__content {\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-popup__actions {\n  display: flex;\n}\n.brizo-popup__drag {\n  top: 0;\n  left: 0;\n  right: 0;\n  margin: 0 auto;\n  position: absolute;\n  width: 30px;\n  height: 30px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n  background-color: #e74c3c;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n}\n.brizo-popup__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-popup__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-popup__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".brizo-extension-wrapper_hide {\n  opacity: 0;\n}\n.brizo-extension-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-extension-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-extension {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n  position: fixed;\n  top: 60px;\n  right: 100px;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-extension__header {\n  display: flex;\n  justify-content: space-between;\n}\n.brizo-extension__content {\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-extension__actions {\n  display: flex;\n}\n.brizo-extension__drag {\n  top: 0;\n  left: 0;\n  right: 0;\n  margin: 0 auto;\n  position: absolute;\n  width: 30px;\n  height: 30px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n  background-color: #e74c3c;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n}\n.brizo-extension__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-extension__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-extension__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2249,40 +2277,54 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "brizo-popup-wrapper", attrs: { id: "brizo-extension" } },
+    {
+      staticClass: "brizo-extension-wrapper",
+      class: { "brizo-extension-wrapper_hide": _vm.hideInspector },
+      attrs: { id: "brizo-extension" }
+    },
     [
       _c(
         "div",
         {
-          staticClass: "brizo-popup brizo-popup_inspector",
+          staticClass: "brizo-extension brizo-extension_inspector",
           style: { transform: _vm.translate }
         },
         [
-          _c("header", { staticClass: "brizo-popup__header" }, [
-            _c("div", {
-              staticClass: "brizo-popup__drag",
-              on: { mousedown: _vm.startDrag }
-            }),
-            _vm._v(" "),
-            _c("img", {
-              attrs: {
-                src:
-                  "https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg",
-                alt: "Лого"
-              }
-            })
-          ]),
+          _c(
+            "header",
+            { staticClass: "brizo-extension__header" },
+            [
+              _c("div", {
+                staticClass: "brizo-extension__drag",
+                on: { mousedown: _vm.startDrag }
+              }),
+              _vm._v(" "),
+              _c("img", {
+                attrs: {
+                  src:
+                    "https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg",
+                  alt: "Лого"
+                }
+              }),
+              _vm._v(" "),
+              _c("base-button", {
+                attrs: { text: "Close" },
+                on: { click: _vm.closeInspector }
+              })
+            ],
+            1
+          ),
           _vm._v(" "),
           _c(
             "section",
-            { staticClass: "brizo-popup__content" },
+            { staticClass: "brizo-extension__content" },
             [
               _vm.contents.length
                 ? _c(
                     "div",
-                    { staticClass: "brizo-popup__row" },
+                    { staticClass: "brizo-extension__row" },
                     [
-                      _c("div", { staticClass: "brizo-popup__sub-title" }, [
+                      _c("div", { staticClass: "brizo-extension__sub-title" }, [
                         _vm._v("Сделки для создания сделки:")
                       ]),
                       _vm._v(" "),
@@ -2298,27 +2340,27 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _c("div", { staticClass: "brizo-popup__row" }, [
-                _c("div", { staticClass: "brizo-popup__sub-title" }, [
+              _c("div", { staticClass: "brizo-extension__row" }, [
+                _c("div", { staticClass: "brizo-extension__sub-title" }, [
                   _vm._v("Выбранные параметры сделки:")
                 ]),
                 _vm._v(" "),
                 _vm.element.name
-                  ? _c("div", { staticClass: "brizo-popup__tag" }, [
+                  ? _c("div", { staticClass: "brizo-extension__tag" }, [
                       _c("strong", [_vm._v("Название:")]),
                       _vm._v(" " + _vm._s(_vm.element.name) + "\n        ")
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.element.budget
-                  ? _c("div", { staticClass: "brizo-popup__tag" }, [
+                  ? _c("div", { staticClass: "brizo-extension__tag" }, [
                       _c("strong", [_vm._v("Бюджет:")]),
                       _vm._v(" " + _vm._s(_vm.element.budget) + "\n        ")
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.element.description
-                  ? _c("div", { staticClass: "brizo-popup__tag" }, [
+                  ? _c("div", { staticClass: "brizo-extension__tag" }, [
                       _c("strong", [_vm._v("Описание:")]),
                       _vm._v(
                         " " + _vm._s(_vm.element.description) + "\n        "
@@ -2339,7 +2381,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "footer",
-            { staticClass: "brizo-popup__actions" },
+            { staticClass: "brizo-extension__actions" },
             [
               _c("base-button", {
                 attrs: {

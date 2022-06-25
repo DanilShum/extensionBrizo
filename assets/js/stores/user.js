@@ -16,6 +16,7 @@ export default {
     deals: [],
     contents: [],
     isOpenedPopup: false,
+    hideInspector: false,
   },
   mutations: {
     set(state, updatedState) {

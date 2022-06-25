@@ -22,8 +22,6 @@ import BaseButton from '../../components/buttons/BaseButton';
 export default {
   name: 'Deals',
   components: { BaseButton },
-  props: {},
-  data: () => ({}),
   computed: {
     ...mapGetters('user', ['deals']),
     ...mapState('user', ['contents']),
@@ -35,6 +33,8 @@ export default {
       window.chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         window.chrome.tabs.sendMessage(tabs[0].id, { inspection: true });
       });
+
+      window.close();
     },
   },
 };
