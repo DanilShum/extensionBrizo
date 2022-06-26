@@ -13,6 +13,6 @@
   z-index: 999;
 }
 
-.brizo-extension *:not(.brizo-inspector):not(.brizo-popup_inspector) {
+.brizo-crm-extension *:not(.brizo-inspector):not(.brizo-extension_inspector) {
   cursor: pointer !important;
 }

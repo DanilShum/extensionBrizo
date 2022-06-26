@@ -20,33 +20,119 @@ module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store */ "./assets/js/store.js");
-/* harmony import */ var _components_Popup_Popup__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Popup/Popup */ "./assets/js/components/Popup/Popup.vue");
-/* harmony import */ var _sass_styles_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../sass/styles.scss */ "./assets/sass/styles.scss");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./plugins/extension */ "./assets/js/plugins/extension.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store */ "./assets/js/store.js");
+/* harmony import */ var _components_Popup_Popup__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Popup/Popup */ "./assets/js/components/Popup/Popup.vue");
+/* harmony import */ var _sass_styles_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../sass/styles.scss */ "./assets/sass/styles.scss");
+
 
 
 
 
 window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
-  _store__WEBPACK_IMPORTED_MODULE_0__.default.commit('user/set', {
-    isOpenedPopup: req.inspection
+  _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
+    isOpenedPopup: req.inspection,
+    contents: req.contents
   });
+  var extension = document.getElementById('brizo-extension');
 
-  if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.user.isOpenedPopup && !document.getElementById('brizo-extension')) {
+  if (_store__WEBPACK_IMPORTED_MODULE_1__.default.state.user.isOpenedPopup && extension) {
+    _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
+      hideInspector: !_store__WEBPACK_IMPORTED_MODULE_1__.default.state.user.hideInspector
+    });
+  }
+
+  if (_store__WEBPACK_IMPORTED_MODULE_1__.default.state.user.isOpenedPopup && !extension) {
     var body = document.querySelector('body');
     var brizoInner = document.createElement('div');
     brizoInner.setAttribute('id', 'brizo-extension');
     body.appendChild(brizoInner);
-    new vue__WEBPACK_IMPORTED_MODULE_3__.default({
+    vue__WEBPACK_IMPORTED_MODULE_4__.default.prototype.$Extension = _plugins_extension__WEBPACK_IMPORTED_MODULE_0__.prototypeExtension;
+    new vue__WEBPACK_IMPORTED_MODULE_4__.default({
       el: '#brizo-extension',
-      store: _store__WEBPACK_IMPORTED_MODULE_0__.default,
+      store: _store__WEBPACK_IMPORTED_MODULE_1__.default,
       render: function render(createElement) {
-        return createElement(_components_Popup_Popup__WEBPACK_IMPORTED_MODULE_1__.default);
+        return createElement(_components_Popup_Popup__WEBPACK_IMPORTED_MODULE_2__.default);
       }
     });
   }
+
+  return true;
 });
+
+/***/ }),
+
+/***/ "./assets/js/plugins/extension.js":
+/*!****************************************!*\
+  !*** ./assets/js/plugins/extension.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => /* binding */ Extension,
+/* harmony export */   "prototypeExtension": () => /* binding */ prototypeExtension
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Extension = /*#__PURE__*/function () {
+  function Extension() {
+    _classCallCheck(this, Extension);
+
+    this.extension = window.chrome;
+    this.test = '';
+  }
+
+  _createClass(Extension, [{
+    key: "storageSyncSet",
+    value: function storageSyncSet(params) {
+      this.storage.sync.set(params);
+    }
+  }, {
+    key: "storageSyncGet",
+    value: function storageSyncGet(keys, callback) {
+      this.storage.sync.get(keys, callback);
+    }
+  }, {
+    key: "storageSyncClear",
+    value: function storageSyncClear() {
+      this.storage.sync.clear();
+    }
+  }, {
+    key: "runtimeSendMessage",
+    value: function runtimeSendMessage(payload) {
+      this.runtime.sendMessage(payload, function (ret) {
+        return console.log('runtimeSendMessage');
+      });
+    }
+  }, {
+    key: "runtimeOnMessage",
+    value: function runtimeOnMessage(callback) {
+      this.runtime.onMessage.addListener(callback);
+    }
+  }, {
+    key: "runtime",
+    get: function get() {
+      return this.extension.runtime;
+    }
+  }, {
+    key: "storage",
+    get: function get() {
+      return this.extension.storage;
+    }
+  }]);
+
+  return Extension;
+}();
+
+
+var prototypeExtension = new Extension();
 
 /***/ }),
 
@@ -127,7 +213,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../plugins/extension */ "./assets/js/plugins/extension.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -137,13 +224,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-
-var updateExtensionStorage = function updateExtensionStorage(key, value) {
-  window.chrome.storage.sync.set(_defineProperty({}, key, value));
-}; // const DOMAIN = 'brizo.ru/api';
-
+ // const DOMAIN = 'brizo.ru/api';
 
 var DOMAIN = 'ozlaalfa.ru/api';
+var ROUTE = "https://".concat(DOMAIN);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   namespaced: true,
   state: {
@@ -152,7 +236,8 @@ var DOMAIN = 'ozlaalfa.ru/api';
     unread_notifications_count: 0,
     deals: [],
     contents: [],
-    isOpenedPopup: false
+    isOpenedPopup: false,
+    hideInspector: false
   },
   mutations: {
     set: function set(state, updatedState) {
@@ -167,13 +252,15 @@ var DOMAIN = 'ozlaalfa.ru/api';
     },
     removeContents: function removeContents(state, index) {
       state.contents.splice(index, 1);
-      updateExtensionStorage('contents', state.contents);
+      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet({
+        contents: state.contents
+      });
     },
     setContent: function setContent(state, _ref2) {
       var key = _ref2.key,
           value = _ref2.value;
       state[key] = value;
-      updateExtensionStorage(key, state[key]);
+      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, key, value));
     }
   },
   getters: {
@@ -205,9 +292,9 @@ var DOMAIN = 'ozlaalfa.ru/api';
     }
   },
   actions: {
-    fetchUser: function fetchUser(_ref3) {
+    setUser: function setUser(_ref3) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var commit, res, _e$response;
+        var commit, _yield$Vue$http$get, data;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
@@ -219,89 +306,102 @@ var DOMAIN = 'ozlaalfa.ru/api';
                 });
                 _context.prev = 2;
                 _context.next = 5;
-                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get('me');
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("".concat(ROUTE, "/me"));
 
               case 5:
-                res = _context.sent;
+                _yield$Vue$http$get = _context.sent;
+                data = _yield$Vue$http$get.data;
+                commit('set', {
+                  currentUser: data
+                });
+                commit('set', {
+                  route: "https://".concat(data.project.domain, ".").concat(DOMAIN)
+                }, {
+                  root: true
+                });
+
+              case 9:
+                _context.prev = 9;
+                commit('set', {
+                  pending: false
+                });
+                return _context.finish(9);
+
+              case 12:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2,, 9, 12]]);
+      }))();
+    },
+    fetchUser: function fetchUser(_ref4) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var commit, res, _e$response;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref4.commit;
+                commit('set', {
+                  pending: true
+                });
+                _context2.prev = 2;
+                _context2.next = 5;
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get('me');
+
+              case 5:
+                res = _context2.sent;
                 commit('set', {
                   currentUser: res.data,
                   unread_notifications_count: res.data.unread_notifications_count
                 });
-                return _context.abrupt("return", res.data);
+                return _context2.abrupt("return", res.data);
 
               case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](2);
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
 
-                if (((_e$response = _context.t0.response) === null || _e$response === void 0 ? void 0 : _e$response.status) === 401) {
+                if (((_e$response = _context2.t0.response) === null || _e$response === void 0 ? void 0 : _e$response.status) === 401) {
                   commit('set', {
                     currentUser: null
                   });
                 }
 
               case 13:
-                _context.prev = 13;
+                _context2.prev = 13;
                 commit('set', {
                   pending: false
                 });
-                return _context.finish(13);
+                return _context2.finish(13);
 
               case 16:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[2, 10, 13, 16]]);
-      }))();
-    },
-    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref4) {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var commit, rootState, _yield$Vue$http$get, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                commit = _ref4.commit, rootState = _ref4.rootState;
-                _context2.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get("notifications/unread");
-
-              case 3:
-                _yield$Vue$http$get = _context2.sent;
-                data = _yield$Vue$http$get.data;
-                commit('set', {
-                  unread_notifications_count: data.unread_notifications_count
-                });
-
-              case 6:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2);
+        }, _callee2, null, [[2, 10, 13, 16]]);
       }))();
     },
-    fetchTransactions: function fetchTransactions(_ref5) {
+    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref5) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        var rootState, _yield$Vue$http$get2, data;
+        var commit, rootState, _yield$Vue$http$get2, data;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                rootState = _ref5.rootState;
+                commit = _ref5.commit, rootState = _ref5.rootState;
                 _context3.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get("transactions/table", {
-                  limit: 50,
-                  offset: 0,
-                  order_column: 'transacted_and_accured',
-                  order_by: 'desc'
-                });
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("notifications/unread");
 
               case 3:
                 _yield$Vue$http$get2 = _context3.sent;
                 data = _yield$Vue$http$get2.data;
-                return _context3.abrupt("return", data);
+                commit('set', {
+                  unread_notifications_count: data.unread_notifications_count
+                });
 
               case 6:
               case "end":
@@ -311,21 +411,51 @@ var DOMAIN = 'ozlaalfa.ru/api';
         }, _callee3);
       }))();
     },
-    createDeals: function createDeals(_ref6) {
-      var getters = _ref6.getters,
-          state = _ref6.state;
-      state.contents.forEach( /*#__PURE__*/function () {
-        var _ref7 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(item) {
-          var _yield$Vue$http$post, data;
+    fetchTransactions: function fetchTransactions(_ref6) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
+        var rootState, _yield$Vue$http$get3, data;
 
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                rootState = _ref6.rootState;
+                _context4.next = 3;
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("transactions/table", {
+                  limit: 50,
+                  offset: 0,
+                  order_column: 'transacted_and_accured',
+                  order_by: 'desc'
+                });
+
+              case 3:
+                _yield$Vue$http$get3 = _context4.sent;
+                data = _yield$Vue$http$get3.data;
+                return _context4.abrupt("return", data);
+
+              case 6:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    createDeals: function createDeals(_ref7) {
+      var getters = _ref7.getters,
+          state = _ref7.state;
+      state.contents.forEach( /*#__PURE__*/function () {
+        var _ref8 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(item) {
+          var _item$budget, _yield$Vue$http$post, data;
+
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context4.prev = 0;
-                  _context4.next = 3;
-                  return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.post("deals", {
-                    budget: Number(item.budget.replace(/\D/g, '')),
+                  _context5.prev = 0;
+                  _context5.next = 3;
+                  return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.post("deals", {
+                    budget: Number((_item$budget = item.budget) === null || _item$budget === void 0 ? void 0 : _item$budget.replace(/\D/g, '')),
                     description: item.description,
                     currency_id: getters.project.default_currency.id,
                     members: [getters.user.id],
@@ -336,26 +466,26 @@ var DOMAIN = 'ozlaalfa.ru/api';
                   });
 
                 case 3:
-                  _yield$Vue$http$post = _context4.sent;
+                  _yield$Vue$http$post = _context5.sent;
                   data = _yield$Vue$http$post.data;
                   state.deals.push(data);
-                  return _context4.abrupt("return", data);
+                  return _context5.abrupt("return", data);
 
                 case 9:
-                  _context4.prev = 9;
-                  _context4.t0 = _context4["catch"](0);
-                  console.log(_context4.t0);
+                  _context5.prev = 9;
+                  _context5.t0 = _context5["catch"](0);
+                  console.log(_context5.t0);
 
                 case 12:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee4, null, [[0, 9]]);
+          }, _callee5, null, [[0, 9]]);
         }));
 
         return function (_x) {
-          return _ref7.apply(this, arguments);
+          return _ref8.apply(this, arguments);
         };
       }());
     }
@@ -436,6 +566,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -452,7 +587,6 @@ var POPUP_TOP = 20;
   props: {},
   data: function data() {
     return {
-      contents: [],
       element: {},
       y: 0,
       x: 0,
@@ -474,19 +608,28 @@ var POPUP_TOP = 20;
   beforeDestroy: function beforeDestroy() {
     this.stopInspection();
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)('user', ['isOpenedPopup'])), {}, {
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)('user', ['isOpenedPopup', 'hideInspector', 'contents'])), {}, {
     inspectorSelect: function inspectorSelect() {
       return document.getElementById('brizo-inspector__select') || null;
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)('user', ['add'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)('user', ['createDeals'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)('user', ['add', 'set'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)('user', ['createDeals'])), {}, {
+    closeInspector: function closeInspector() {
+      this.set({
+        hideInspector: true
+      });
+      this.setInspection(false);
+    },
     setInspection: function setInspection(value) {
       value ? this.startInspection() : this.stopInspection();
       this.isInspection = value;
     },
     setDeal: function setDeal() {
       if (this.element.name) {
-        this.contents.push(this.element);
+        this.add({
+          key: 'contents',
+          value: this.element
+        });
         this.element = {};
         this.createDeal();
       }
@@ -497,19 +640,15 @@ var POPUP_TOP = 20;
         isOpenedPopup: false,
         isInspection: false
       };
-      window.chrome.runtime.sendMessage(payload, function (ret) {
-        if (!ret) {
-          console.log('Error send message ' + window.chrome.runtime.lastError);
-          return;
-        }
-
-        if (ret.ok === 'ok') console.log(ret.info);
+      this.$Extension.runtimeSendMessage(payload);
+      this.$Extension.storageSyncSet({
+        contents: this.contents
       });
     },
     startInspection: function startInspection() {
       this.appendInspectorElement();
       var body = document.querySelector('body');
-      body.classList.add('brizo-extension');
+      body.classList.add('brizo-crm-extension');
       document.addEventListener('mouseover', this.hoverPageElement);
       document.addEventListener('click', this.clickPageElement, true);
     },
@@ -524,7 +663,7 @@ var POPUP_TOP = 20;
 
       var el = e.target;
 
-      if (el && el.className !== 'brizo-popup brizo-popup_inspector' && el.className !== 'brizo-popup brizo-inspector__select-wrapper' && ((_el$offsetParent = el.offsetParent) === null || _el$offsetParent === void 0 ? void 0 : _el$offsetParent.className) !== 'brizo-popup brizo-popup_inspector' && ((_el$offsetParent2 = el.offsetParent) === null || _el$offsetParent2 === void 0 ? void 0 : _el$offsetParent2.className) !== 'brizo-popup brizo-inspector__select-wrapper') {
+      if (el && el.className !== 'brizo-extension brizo-extension_inspector' && el.className !== 'brizo-extension brizo-inspector__select-wrapper' && ((_el$offsetParent = el.offsetParent) === null || _el$offsetParent === void 0 ? void 0 : _el$offsetParent.className) !== 'brizo-extension brizo-extension_inspector' && ((_el$offsetParent2 = el.offsetParent) === null || _el$offsetParent2 === void 0 ? void 0 : _el$offsetParent2.className) !== 'brizo-extension brizo-inspector__select-wrapper') {
         var _el$getBoundingClient = el.getBoundingClientRect(),
             left = _el$getBoundingClient.left,
             top = _el$getBoundingClient.top,
@@ -555,7 +694,7 @@ var POPUP_TOP = 20;
     clickPageElement: function clickPageElement(e) {
       var _e$target$offsetParen, _e$target$offsetParen2;
 
-      if (((_e$target$offsetParen = e.target.offsetParent) === null || _e$target$offsetParen === void 0 ? void 0 : _e$target$offsetParen.className) === 'brizo-popup brizo-popup_inspector' || ((_e$target$offsetParen2 = e.target.offsetParent) === null || _e$target$offsetParen2 === void 0 ? void 0 : _e$target$offsetParen2.className) === 'brizo-inspector__select-wrapper') return;
+      if (((_e$target$offsetParen = e.target.offsetParent) === null || _e$target$offsetParen === void 0 ? void 0 : _e$target$offsetParen.className) === 'brizo-extension brizo-extension_inspector' || ((_e$target$offsetParen2 = e.target.offsetParent) === null || _e$target$offsetParen2 === void 0 ? void 0 : _e$target$offsetParen2.className) === 'brizo-inspector__select-wrapper') return;
       e.preventDefault();
       e.stopPropagation();
       var el = e.target;
@@ -699,7 +838,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".brizo-popup-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-popup-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-popup {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n  position: fixed;\n  top: 60px;\n  right: 100px;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-popup__content {\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-popup__actions {\n  display: flex;\n}\n.brizo-popup__drag {\n  top: 0;\n  left: 0;\n  right: 0;\n  margin: 0 auto;\n  position: absolute;\n  width: 30px;\n  height: 30px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n  background-color: #e74c3c;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n}\n.brizo-popup__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-popup__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-popup__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".brizo-extension-wrapper_hide {\n  opacity: 0;\n}\n.brizo-extension-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-extension-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-extension {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n  position: fixed;\n  top: 60px;\n  right: 100px;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-extension__header {\n  display: flex;\n  justify-content: space-between;\n}\n.brizo-extension__content {\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-extension__actions {\n  display: flex;\n}\n.brizo-extension__drag {\n  top: 0;\n  left: 0;\n  right: 0;\n  margin: 0 auto;\n  position: absolute;\n  width: 30px;\n  height: 30px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n  background-color: #e74c3c;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n}\n.brizo-extension__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-extension__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-extension__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2249,40 +2388,54 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "brizo-popup-wrapper", attrs: { id: "brizo-extension" } },
+    {
+      staticClass: "brizo-extension-wrapper",
+      class: { "brizo-extension-wrapper_hide": _vm.hideInspector },
+      attrs: { id: "brizo-extension" }
+    },
     [
       _c(
         "div",
         {
-          staticClass: "brizo-popup brizo-popup_inspector",
+          staticClass: "brizo-extension brizo-extension_inspector",
           style: { transform: _vm.translate }
         },
         [
-          _c("header", { staticClass: "brizo-popup__header" }, [
-            _c("div", {
-              staticClass: "brizo-popup__drag",
-              on: { mousedown: _vm.startDrag }
-            }),
-            _vm._v(" "),
-            _c("img", {
-              attrs: {
-                src:
-                  "https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg",
-                alt: "Лого"
-              }
-            })
-          ]),
+          _c(
+            "header",
+            { staticClass: "brizo-extension__header" },
+            [
+              _c("div", {
+                staticClass: "brizo-extension__drag",
+                on: { mousedown: _vm.startDrag }
+              }),
+              _vm._v(" "),
+              _c("img", {
+                attrs: {
+                  src:
+                    "https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg",
+                  alt: "Лого"
+                }
+              }),
+              _vm._v(" "),
+              _c("base-button", {
+                attrs: { text: "Close" },
+                on: { click: _vm.closeInspector }
+              })
+            ],
+            1
+          ),
           _vm._v(" "),
           _c(
             "section",
-            { staticClass: "brizo-popup__content" },
+            { staticClass: "brizo-extension__content" },
             [
               _vm.contents.length
                 ? _c(
                     "div",
-                    { staticClass: "brizo-popup__row" },
+                    { staticClass: "brizo-extension__row" },
                     [
-                      _c("div", { staticClass: "brizo-popup__sub-title" }, [
+                      _c("div", { staticClass: "brizo-extension__sub-title" }, [
                         _vm._v("Сделки для создания сделки:")
                       ]),
                       _vm._v(" "),
@@ -2298,27 +2451,27 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _c("div", { staticClass: "brizo-popup__row" }, [
-                _c("div", { staticClass: "brizo-popup__sub-title" }, [
+              _c("div", { staticClass: "brizo-extension__row" }, [
+                _c("div", { staticClass: "brizo-extension__sub-title" }, [
                   _vm._v("Выбранные параметры сделки:")
                 ]),
                 _vm._v(" "),
                 _vm.element.name
-                  ? _c("div", { staticClass: "brizo-popup__tag" }, [
+                  ? _c("div", { staticClass: "brizo-extension__tag" }, [
                       _c("strong", [_vm._v("Название:")]),
                       _vm._v(" " + _vm._s(_vm.element.name) + "\n        ")
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.element.budget
-                  ? _c("div", { staticClass: "brizo-popup__tag" }, [
+                  ? _c("div", { staticClass: "brizo-extension__tag" }, [
                       _c("strong", [_vm._v("Бюджет:")]),
                       _vm._v(" " + _vm._s(_vm.element.budget) + "\n        ")
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.element.description
-                  ? _c("div", { staticClass: "brizo-popup__tag" }, [
+                  ? _c("div", { staticClass: "brizo-extension__tag" }, [
                       _c("strong", [_vm._v("Описание:")]),
                       _vm._v(
                         " " + _vm._s(_vm.element.description) + "\n        "
@@ -2339,7 +2492,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "footer",
-            { staticClass: "brizo-popup__actions" },
+            { staticClass: "brizo-extension__actions" },
             [
               _c("base-button", {
                 attrs: {

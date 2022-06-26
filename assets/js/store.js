@@ -11,7 +11,6 @@ const DOMAIN = 'ozlaalfa.ru/api';
 const store = new Vuex.Store({
   plugins: [ResetPlugin],
   modules: { user },
-
   state: {
     route: `https://${DOMAIN}`,
   },
