@@ -1,11 +1,10 @@
 import Vue from 'vue';
+import { prototypeExtension } from '../plugins/extension';
 
-const updateExtensionStorage = (key, value) => {
-  window.chrome.storage.sync.set({ [key]: value });
-};
 
 // const DOMAIN = 'brizo.ru/api';
 const DOMAIN = 'ozlaalfa.ru/api';
+const ROUTE = `https://${DOMAIN}`;
 
 export default {
   namespaced: true,
@@ -29,11 +28,11 @@ export default {
     },
     removeContents(state, index) {
       state.contents.splice(index, 1);
-      updateExtensionStorage('contents', state.contents);
+      prototypeExtension.storageSyncSet({ contents: state.contents });
     },
     setContent(state, { key, value }) {
       state[key] = value;
-      updateExtensionStorage(key, state[key]);
+      prototypeExtension.storageSyncSet({ [key]: value });
     },
   },
   getters: {
@@ -45,6 +44,17 @@ export default {
     deals: (state) => state.deals,
   },
   actions: {
+    async setUser({ commit }) {
+      commit('set', { pending: true });
+
+      try {
+        const { data } = await Vue.http.get(`${ROUTE}/me`);
+        commit('set', { currentUser: data });
+        commit('set', { route: `https://${data.project.domain}.${DOMAIN}` }, { root: true });
+      } finally {
+        commit('set', { pending: false });
+      }
+    },
     async fetchUser({ commit }) {
       commit('set', { pending: true });
 
@@ -88,7 +98,7 @@ export default {
       state.contents.forEach(async (item) => {
         try {
           const { data } = await Vue.http.post(`deals`, {
-            budget: Number(item.budget.replace(/\D/g, '')),
+            budget: Number(item.budget?.replace(/\D/g, '')),
             description: item.description,
             currency_id: getters.project.default_currency.id,
             members: [getters.user.id],

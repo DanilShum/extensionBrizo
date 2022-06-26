@@ -2101,6 +2101,79 @@ vue__WEBPACK_IMPORTED_MODULE_1__.default.http = api;
 
 /***/ }),
 
+/***/ "./assets/js/plugins/extension.js":
+/*!****************************************!*\
+  !*** ./assets/js/plugins/extension.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => /* binding */ Extension,
+/* harmony export */   "prototypeExtension": () => /* binding */ prototypeExtension
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Extension = /*#__PURE__*/function () {
+  function Extension() {
+    _classCallCheck(this, Extension);
+
+    this.extension = window.chrome;
+    this.test = '';
+  }
+
+  _createClass(Extension, [{
+    key: "storageSyncSet",
+    value: function storageSyncSet(params) {
+      this.storage.sync.set(params);
+    }
+  }, {
+    key: "storageSyncGet",
+    value: function storageSyncGet(keys, callback) {
+      this.storage.sync.get(keys, callback);
+    }
+  }, {
+    key: "storageSyncClear",
+    value: function storageSyncClear() {
+      this.storage.sync.clear();
+    }
+  }, {
+    key: "runtimeSendMessage",
+    value: function runtimeSendMessage(payload) {
+      this.runtime.sendMessage(payload, function (ret) {
+        return console.log('runtimeSendMessage');
+      });
+    }
+  }, {
+    key: "runtimeOnMessage",
+    value: function runtimeOnMessage(callback) {
+      this.runtime.onMessage.addListener(callback);
+    }
+  }, {
+    key: "runtime",
+    get: function get() {
+      return this.extension.runtime;
+    }
+  }, {
+    key: "storage",
+    get: function get() {
+      return this.extension.storage;
+    }
+  }]);
+
+  return Extension;
+}();
+
+
+var prototypeExtension = new Extension();
+
+/***/ }),
+
 /***/ "./assets/js/plugins/reset.js":
 /*!************************************!*\
   !*** ./assets/js/plugins/reset.js ***!
@@ -2178,7 +2251,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../plugins/extension */ "./assets/js/plugins/extension.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2188,13 +2262,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-
-var updateExtensionStorage = function updateExtensionStorage(key, value) {
-  window.chrome.storage.sync.set(_defineProperty({}, key, value));
-}; // const DOMAIN = 'brizo.ru/api';
-
+ // const DOMAIN = 'brizo.ru/api';
 
 var DOMAIN = 'ozlaalfa.ru/api';
+var ROUTE = "https://".concat(DOMAIN);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   namespaced: true,
   state: {
@@ -2219,13 +2290,15 @@ var DOMAIN = 'ozlaalfa.ru/api';
     },
     removeContents: function removeContents(state, index) {
       state.contents.splice(index, 1);
-      updateExtensionStorage('contents', state.contents);
+      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet({
+        contents: state.contents
+      });
     },
     setContent: function setContent(state, _ref2) {
       var key = _ref2.key,
           value = _ref2.value;
       state[key] = value;
-      updateExtensionStorage(key, state[key]);
+      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, key, value));
     }
   },
   getters: {
@@ -2257,9 +2330,9 @@ var DOMAIN = 'ozlaalfa.ru/api';
     }
   },
   actions: {
-    fetchUser: function fetchUser(_ref3) {
+    setUser: function setUser(_ref3) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var commit, res, _e$response;
+        var commit, _yield$Vue$http$get, data;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
@@ -2271,89 +2344,102 @@ var DOMAIN = 'ozlaalfa.ru/api';
                 });
                 _context.prev = 2;
                 _context.next = 5;
-                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get('me');
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("".concat(ROUTE, "/me"));
 
               case 5:
-                res = _context.sent;
+                _yield$Vue$http$get = _context.sent;
+                data = _yield$Vue$http$get.data;
+                commit('set', {
+                  currentUser: data
+                });
+                commit('set', {
+                  route: "https://".concat(data.project.domain, ".").concat(DOMAIN)
+                }, {
+                  root: true
+                });
+
+              case 9:
+                _context.prev = 9;
+                commit('set', {
+                  pending: false
+                });
+                return _context.finish(9);
+
+              case 12:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2,, 9, 12]]);
+      }))();
+    },
+    fetchUser: function fetchUser(_ref4) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var commit, res, _e$response;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref4.commit;
+                commit('set', {
+                  pending: true
+                });
+                _context2.prev = 2;
+                _context2.next = 5;
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get('me');
+
+              case 5:
+                res = _context2.sent;
                 commit('set', {
                   currentUser: res.data,
                   unread_notifications_count: res.data.unread_notifications_count
                 });
-                return _context.abrupt("return", res.data);
+                return _context2.abrupt("return", res.data);
 
               case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](2);
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
 
-                if (((_e$response = _context.t0.response) === null || _e$response === void 0 ? void 0 : _e$response.status) === 401) {
+                if (((_e$response = _context2.t0.response) === null || _e$response === void 0 ? void 0 : _e$response.status) === 401) {
                   commit('set', {
                     currentUser: null
                   });
                 }
 
               case 13:
-                _context.prev = 13;
+                _context2.prev = 13;
                 commit('set', {
                   pending: false
                 });
-                return _context.finish(13);
+                return _context2.finish(13);
 
               case 16:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[2, 10, 13, 16]]);
-      }))();
-    },
-    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref4) {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var commit, rootState, _yield$Vue$http$get, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                commit = _ref4.commit, rootState = _ref4.rootState;
-                _context2.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get("notifications/unread");
-
-              case 3:
-                _yield$Vue$http$get = _context2.sent;
-                data = _yield$Vue$http$get.data;
-                commit('set', {
-                  unread_notifications_count: data.unread_notifications_count
-                });
-
-              case 6:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2);
+        }, _callee2, null, [[2, 10, 13, 16]]);
       }))();
     },
-    fetchTransactions: function fetchTransactions(_ref5) {
+    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref5) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        var rootState, _yield$Vue$http$get2, data;
+        var commit, rootState, _yield$Vue$http$get2, data;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                rootState = _ref5.rootState;
+                commit = _ref5.commit, rootState = _ref5.rootState;
                 _context3.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get("transactions/table", {
-                  limit: 50,
-                  offset: 0,
-                  order_column: 'transacted_and_accured',
-                  order_by: 'desc'
-                });
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("notifications/unread");
 
               case 3:
                 _yield$Vue$http$get2 = _context3.sent;
                 data = _yield$Vue$http$get2.data;
-                return _context3.abrupt("return", data);
+                commit('set', {
+                  unread_notifications_count: data.unread_notifications_count
+                });
 
               case 6:
               case "end":
@@ -2363,21 +2449,51 @@ var DOMAIN = 'ozlaalfa.ru/api';
         }, _callee3);
       }))();
     },
-    createDeals: function createDeals(_ref6) {
-      var getters = _ref6.getters,
-          state = _ref6.state;
-      state.contents.forEach( /*#__PURE__*/function () {
-        var _ref7 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(item) {
-          var _yield$Vue$http$post, data;
+    fetchTransactions: function fetchTransactions(_ref6) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
+        var rootState, _yield$Vue$http$get3, data;
 
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                rootState = _ref6.rootState;
+                _context4.next = 3;
+                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("transactions/table", {
+                  limit: 50,
+                  offset: 0,
+                  order_column: 'transacted_and_accured',
+                  order_by: 'desc'
+                });
+
+              case 3:
+                _yield$Vue$http$get3 = _context4.sent;
+                data = _yield$Vue$http$get3.data;
+                return _context4.abrupt("return", data);
+
+              case 6:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    createDeals: function createDeals(_ref7) {
+      var getters = _ref7.getters,
+          state = _ref7.state;
+      state.contents.forEach( /*#__PURE__*/function () {
+        var _ref8 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(item) {
+          var _item$budget, _yield$Vue$http$post, data;
+
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context4.prev = 0;
-                  _context4.next = 3;
-                  return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.post("deals", {
-                    budget: Number(item.budget.replace(/\D/g, '')),
+                  _context5.prev = 0;
+                  _context5.next = 3;
+                  return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.post("deals", {
+                    budget: Number((_item$budget = item.budget) === null || _item$budget === void 0 ? void 0 : _item$budget.replace(/\D/g, '')),
                     description: item.description,
                     currency_id: getters.project.default_currency.id,
                     members: [getters.user.id],
@@ -2388,26 +2504,26 @@ var DOMAIN = 'ozlaalfa.ru/api';
                   });
 
                 case 3:
-                  _yield$Vue$http$post = _context4.sent;
+                  _yield$Vue$http$post = _context5.sent;
                   data = _yield$Vue$http$post.data;
                   state.deals.push(data);
-                  return _context4.abrupt("return", data);
+                  return _context5.abrupt("return", data);
 
                 case 9:
-                  _context4.prev = 9;
-                  _context4.t0 = _context4["catch"](0);
-                  console.log(_context4.t0);
+                  _context5.prev = 9;
+                  _context5.t0 = _context5["catch"](0);
+                  console.log(_context5.t0);
 
                 case 12:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee4, null, [[0, 9]]);
+          }, _callee5, null, [[0, 9]]);
         }));
 
         return function (_x) {
-          return _ref7.apply(this, arguments);
+          return _ref8.apply(this, arguments);
         };
       }());
     }
@@ -2426,10 +2542,11 @@ var DOMAIN = 'ozlaalfa.ru/api';
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store */ "./assets/js/store.js");
-/* harmony import */ var _App_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./App.vue */ "./assets/js/App.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _App_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.vue */ "./assets/js/App.vue");
+/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./plugins/extension */ "./assets/js/plugins/extension.js");
 /* harmony import */ var _plugins_axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./plugins/axios */ "./assets/js/plugins/axios.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store */ "./assets/js/store.js");
 
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -2441,102 +2558,51 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
- // const DOMAIN = 'brizo.ru/api';
 
-var DOMAIN = 'ozlaalfa.ru/api';
-var ROUTE = "https://".concat(DOMAIN);
 
-var getUser = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-    var _yield$api$get, data;
-
+_store__WEBPACK_IMPORTED_MODULE_4__.default.dispatch('user/setUser');
+_plugins_axios__WEBPACK_IMPORTED_MODULE_3__.default.interceptors.request.use( /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(config) {
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
-              pending: true
-            });
-            _context.prev = 1;
-            _context.next = 4;
-            return _plugins_axios__WEBPACK_IMPORTED_MODULE_3__.default.get("".concat(ROUTE, "/me"));
+            config.baseURL = _store__WEBPACK_IMPORTED_MODULE_4__.default.state.route;
+            return _context.abrupt("return", config);
 
-          case 4:
-            _yield$api$get = _context.sent;
-            data = _yield$api$get.data;
-            _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
-              currentUser: data
-            });
-            _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('set', {
-              route: "https://".concat(data.project.domain, ".").concat(DOMAIN)
-            });
-
-          case 8:
-            _context.prev = 8;
-            _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
-              pending: false
-            });
-            return _context.finish(8);
-
-          case 11:
+          case 2:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[1,, 8, 11]]);
-  }));
-
-  return function getUser() {
-    return _ref.apply(this, arguments);
-  };
-}();
-
-getUser();
-_plugins_axios__WEBPACK_IMPORTED_MODULE_3__.default.interceptors.request.use( /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(config) {
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            config.baseURL = _store__WEBPACK_IMPORTED_MODULE_1__.default.state.route;
-            return _context2.abrupt("return", config);
-
-          case 2:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2);
+    }, _callee);
   }));
 
   return function (_x) {
-    return _ref2.apply(this, arguments);
+    return _ref.apply(this, arguments);
   };
-}());
-window.chrome.storage.sync.get(['contents', 'isOpenedPopup', 'hideInspector'], function (state) {
-  console.log('INIT', state);
-
-  for (var key in state) {
-    _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', _defineProperty({}, key, state[key]));
-  }
-}); // window.chrome.storage.onChanged.addListener(function (changes) {
+}()); // window.chrome.storage.onChanged.addListener(function (changes) {
 //   for (const key in changes) {
 //     store.commit('user/set', { [key]: changes[key].newValue });
 //   }
 // });
 
-window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
-  for (var key in req) {
-    _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', _defineProperty({}, key, req[key]));
-    window.chrome.storage.sync.set(_defineProperty({}, key, req[key]));
-    console.log(_store__WEBPACK_IMPORTED_MODULE_1__.default.state, 'SETTT');
+_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension.storageSyncGet(['contents'], function (params) {
+  for (var key in params) {
+    _store__WEBPACK_IMPORTED_MODULE_4__.default.commit('user/set', _defineProperty({}, key, params[key]));
   }
 });
-new vue__WEBPACK_IMPORTED_MODULE_4__.default({
+_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension.runtimeOnMessage(function (req, sender, response) {
+  for (var key in req) {
+    _store__WEBPACK_IMPORTED_MODULE_4__.default.commit('user/set', _defineProperty({}, key, req[key]));
+  }
+});
+vue__WEBPACK_IMPORTED_MODULE_5__.default.prototype.$Extension = _plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension;
+new vue__WEBPACK_IMPORTED_MODULE_5__.default({
   el: '#app',
-  store: _store__WEBPACK_IMPORTED_MODULE_1__.default,
+  store: _store__WEBPACK_IMPORTED_MODULE_4__.default,
   render: function render(createElement) {
-    return createElement(_App_vue__WEBPACK_IMPORTED_MODULE_2__.default);
+    return createElement(_App_vue__WEBPACK_IMPORTED_MODULE_1__.default);
   }
 });
 
@@ -2939,37 +3005,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     BaseButton: _components_buttons_BaseButton__WEBPACK_IMPORTED_MODULE_0__.default
   },
-  props: {},
-  data: function data() {
-    return {};
-  },
-  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', ['deals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)('user', ['contents', 'hideInspector', 'isOpenedPopup'])), {}, {
-    inspectionButtonText: function inspectionButtonText() {
-      return this.isOpenedPopup || !this.hideInspector ? 'Остановить инспекцию' : 'Начать инспекцию';
-    }
-  }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('user', ['createDeals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapMutations)('user', ['removeContents', 'set'])), {}, {
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', ['deals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)('user', ['contents'])),
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('user', ['createDeals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapMutations)('user', ['removeContents'])), {}, {
     inspection: function inspection() {
+      var payload = {
+        inspection: true,
+        contents: this.contents
+      };
       window.chrome.tabs.query({
         active: true,
         currentWindow: true
       }, function (tabs) {
-        window.chrome.tabs.sendMessage(tabs[0].id, {
-          inspection: true
-        });
-      });
-
-      if (!this.isOpenedPopup) {
-        window.chrome.storage.sync.set({
-          isOpenedPopup: true
-        });
-      } else {
-        window.chrome.storage.sync.set({
-          hideInspector: !this.hideInspector
-        });
-      }
-
-      window.close();
+        window.chrome.tabs.sendMessage(tabs[0].id, payload);
+      }); // window.close();
     }
   })
 });
@@ -5524,7 +5572,7 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _c("base-button", {
-        attrs: { type: "button", text: _vm.inspectionButtonText },
+        attrs: { type: "button", text: "Начать инспекцию" },
         on: { click: _vm.inspection }
       })
     ],

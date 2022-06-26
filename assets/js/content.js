@@ -1,10 +1,11 @@
 import Vue from 'vue';
+import { prototypeExtension } from './plugins/extension';
 import store from './store';
 import Popup from './components/Popup/Popup';
 import '../sass/styles.scss';
 
 window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
-  store.commit('user/set', { isOpenedPopup: req.inspection });
+  store.commit('user/set', { isOpenedPopup: req.inspection, contents: req.contents });
 
   const extension = document.getElementById('brizo-extension');
 
@@ -19,10 +20,14 @@ window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
 
     body.appendChild(brizoInner);
 
+    Vue.prototype.$Extension = prototypeExtension;
+
     new Vue({
       el: '#brizo-extension',
       store,
       render: (createElement) => createElement(Popup),
     });
   }
+
+  return true;
 });

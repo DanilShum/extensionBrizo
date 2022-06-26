@@ -70,7 +70,6 @@ export default {
   components: { Tags, BaseButton },
   props: {},
   data: () => ({
-    contents: [],
     element: {},
     y: 0,
     x: 0,
@@ -92,7 +91,7 @@ export default {
     this.stopInspection();
   },
   computed: {
-    ...mapState('user', ['isOpenedPopup', 'hideInspector']),
+    ...mapState('user', ['isOpenedPopup', 'hideInspector', 'contents']),
     inspectorSelect() {
       return document.getElementById('brizo-inspector__select') || null;
     },
@@ -102,13 +101,7 @@ export default {
     ...mapActions('user', ['createDeals']),
     closeInspector() {
       this.set({ hideInspector: true });
-      window.chrome.runtime.sendMessage({ hideInspector: true }, function (ret) {
-        if (!ret) {
-          console.log('Error send message ' + window.chrome.runtime.lastError);
-          return;
-        }
-        if (ret.ok === 'ok') console.log(ret.info);
-      });
+      this.setInspection(false);
     },
     setInspection(value) {
       value ? this.startInspection() : this.stopInspection();
@@ -116,7 +109,7 @@ export default {
     },
     setDeal() {
       if (this.element.name) {
-        this.contents.push(this.element);
+        this.add({ key: 'contents', value: this.element });
         this.element = {};
         this.createDeal();
       }
@@ -127,13 +120,8 @@ export default {
         isOpenedPopup: false,
         isInspection: false,
       };
-      window.chrome.runtime.sendMessage(payload, function (ret) {
-        if (!ret) {
-          console.log('Error send message ' + window.chrome.runtime.lastError);
-          return;
-        }
-        if (ret.ok === 'ok') console.log(ret.info);
-      });
+      this.$Extension.runtimeSendMessage(payload);
+      this.$Extension.storageSyncSet({ contents: this.contents });
     },
     startInspection() {
       this.appendInspectorElement();
