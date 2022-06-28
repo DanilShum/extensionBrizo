@@ -11,13 +11,13 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-// window.chrome.storage.onChanged.addListener(function (changes) {
-//   for (const key in changes) {
-//     store.commit('user/set', { [key]: changes[key].newValue });
-//   }
-// });
-
 prototypeExtension.storageSyncGet(['contents'], (params) => {
+  for (const key in params) {
+    store.commit('user/set', { [key]: params[key] });
+  }
+});
+
+prototypeExtension.storageSyncOnChanged(['contents'], (params) => {
   for (const key in params) {
     store.commit('user/set', { [key]: params[key] });
   }

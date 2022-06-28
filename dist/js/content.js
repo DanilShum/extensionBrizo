@@ -30,7 +30,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
+_plugins_extension__WEBPACK_IMPORTED_MODULE_0__.prototypeExtension.runtimeOnMessage(function (req, sender, response) {
   _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
     isOpenedPopup: req.inspection,
     contents: req.contents
@@ -100,6 +100,11 @@ var Extension = /*#__PURE__*/function () {
       this.storage.sync.get(keys, callback);
     }
   }, {
+    key: "storageSyncOnChanged",
+    value: function storageSyncOnChanged(callback) {
+      this.storage.onChanged.addListener(callback);
+    }
+  }, {
     key: "storageSyncClear",
     value: function storageSyncClear() {
       this.storage.sync.clear();
@@ -117,6 +122,24 @@ var Extension = /*#__PURE__*/function () {
       this.runtime.onMessage.addListener(callback);
     }
   }, {
+    key: "tabQuery",
+    value: function tabQuery(params, callback) {
+      this.tabs.query(params, callback);
+    }
+  }, {
+    key: "tabSendMessage",
+    value: function tabSendMessage(_ref) {
+      var id = _ref.id,
+          payload = _ref.payload,
+          callback = _ref.callback;
+      this.tabs.sendMessage(id, payload, callback);
+    }
+  }, {
+    key: "tabCreate",
+    value: function tabCreate(params) {
+      this.tabs.create(params);
+    }
+  }, {
     key: "runtime",
     get: function get() {
       return this.extension.runtime;
@@ -125,6 +148,11 @@ var Extension = /*#__PURE__*/function () {
     key: "storage",
     get: function get() {
       return this.extension.storage;
+    }
+  }, {
+    key: "tabs",
+    get: function get() {
+      return this.extension.tabs;
     }
   }]);
 

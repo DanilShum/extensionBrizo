@@ -34,11 +34,11 @@ export default {
         inspection: true,
         contents: this.contents,
       };
-      window.chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        window.chrome.tabs.sendMessage(tabs[0].id, payload);
+      this.$Extension.tabQuery({ active: true, currentWindow: true }, (tabs) => {
+        this.$Extension.tabSendMessage({ id: tabs[0].id, payload });
       });
 
-      // window.close();
+      window.close();
     },
   },
 };

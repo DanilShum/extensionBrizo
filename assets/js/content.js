@@ -4,7 +4,7 @@ import store from './store';
 import Popup from './components/Popup/Popup';
 import '../sass/styles.scss';
 
-window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
+prototypeExtension.runtimeOnMessage(function (req, sender, response) {
   store.commit('user/set', { isOpenedPopup: req.inspection, contents: req.contents });
 
   const extension = document.getElementById('brizo-extension');

@@ -2138,6 +2138,11 @@ var Extension = /*#__PURE__*/function () {
       this.storage.sync.get(keys, callback);
     }
   }, {
+    key: "storageSyncOnChanged",
+    value: function storageSyncOnChanged(callback) {
+      this.storage.onChanged.addListener(callback);
+    }
+  }, {
     key: "storageSyncClear",
     value: function storageSyncClear() {
       this.storage.sync.clear();
@@ -2155,6 +2160,24 @@ var Extension = /*#__PURE__*/function () {
       this.runtime.onMessage.addListener(callback);
     }
   }, {
+    key: "tabQuery",
+    value: function tabQuery(params, callback) {
+      this.tabs.query(params, callback);
+    }
+  }, {
+    key: "tabSendMessage",
+    value: function tabSendMessage(_ref) {
+      var id = _ref.id,
+          payload = _ref.payload,
+          callback = _ref.callback;
+      this.tabs.sendMessage(id, payload, callback);
+    }
+  }, {
+    key: "tabCreate",
+    value: function tabCreate(params) {
+      this.tabs.create(params);
+    }
+  }, {
     key: "runtime",
     get: function get() {
       return this.extension.runtime;
@@ -2163,6 +2186,11 @@ var Extension = /*#__PURE__*/function () {
     key: "storage",
     get: function get() {
       return this.extension.storage;
+    }
+  }, {
+    key: "tabs",
+    get: function get() {
+      return this.extension.tabs;
     }
   }]);
 
@@ -2581,13 +2609,13 @@ _plugins_axios__WEBPACK_IMPORTED_MODULE_3__.default.interceptors.request.use( /*
   return function (_x) {
     return _ref.apply(this, arguments);
   };
-}()); // window.chrome.storage.onChanged.addListener(function (changes) {
-//   for (const key in changes) {
-//     store.commit('user/set', { [key]: changes[key].newValue });
-//   }
-// });
-
+}());
 _plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension.storageSyncGet(['contents'], function (params) {
+  for (var key in params) {
+    _store__WEBPACK_IMPORTED_MODULE_4__.default.commit('user/set', _defineProperty({}, key, params[key]));
+  }
+});
+_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension.storageSyncOnChanged(['contents'], function (params) {
   for (var key in params) {
     _store__WEBPACK_IMPORTED_MODULE_4__.default.commit('user/set', _defineProperty({}, key, params[key]));
   }
@@ -2658,7 +2686,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)('user', ['user', 'isActive'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)('user', ['pending'])),
   methods: {
     linkTo: function linkTo() {
-      window.chrome.tabs.create({
+      this.$Extension.tabCreate({
         url: 'https://brizo.ru/cabinet/'
       });
     }
@@ -3008,16 +3036,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', ['deals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)('user', ['contents'])),
   methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('user', ['createDeals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapMutations)('user', ['removeContents'])), {}, {
     inspection: function inspection() {
+      var _this = this;
+
       var payload = {
         inspection: true,
         contents: this.contents
       };
-      window.chrome.tabs.query({
+      this.$Extension.tabQuery({
         active: true,
         currentWindow: true
       }, function (tabs) {
-        window.chrome.tabs.sendMessage(tabs[0].id, payload);
-      }); // window.close();
+        _this.$Extension.tabSendMessage({
+          id: tabs[0].id,
+          payload: payload
+        });
+      });
+      window.close();
     }
   })
 });
