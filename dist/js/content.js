@@ -22,7 +22,7 @@ module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./plugins/extension */ "./assets/js/plugins/extension.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store */ "./assets/js/store.js");
+/* harmony import */ var _stores_content_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/content/store */ "./assets/js/stores/content/store.js");
 /* harmony import */ var _components_Popup_Popup__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Popup/Popup */ "./assets/js/components/Popup/Popup.vue");
 /* harmony import */ var _sass_styles_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../sass/styles.scss */ "./assets/sass/styles.scss");
 
@@ -30,20 +30,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
-  _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
-    isOpenedPopup: req.inspection,
-    contents: req.contents
+_plugins_extension__WEBPACK_IMPORTED_MODULE_0__.prototypeExtension.runtimeOnMessage(function (req, sender, response) {
+  _stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default.commit("".concat(req.entity, "/set"), {
+    list: req[req.entity]
+  });
+  _stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default.commit('set', {
+    isOpenedPopup: req.inspection
   });
   var extension = document.getElementById('brizo-extension');
 
-  if (_store__WEBPACK_IMPORTED_MODULE_1__.default.state.user.isOpenedPopup && extension) {
-    _store__WEBPACK_IMPORTED_MODULE_1__.default.commit('user/set', {
-      hideInspector: !_store__WEBPACK_IMPORTED_MODULE_1__.default.state.user.hideInspector
+  if (_stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default.state.isOpenedPopup && extension) {
+    _stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default.commit('set', {
+      hideInspector: !_stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default.state.hideInspector
     });
   }
 
-  if (_store__WEBPACK_IMPORTED_MODULE_1__.default.state.user.isOpenedPopup && !extension) {
+  if (_stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default.state.isOpenedPopup && !extension) {
     var body = document.querySelector('body');
     var brizoInner = document.createElement('div');
     brizoInner.setAttribute('id', 'brizo-extension');
@@ -51,7 +53,7 @@ window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
     vue__WEBPACK_IMPORTED_MODULE_4__.default.prototype.$Extension = _plugins_extension__WEBPACK_IMPORTED_MODULE_0__.prototypeExtension;
     new vue__WEBPACK_IMPORTED_MODULE_4__.default({
       el: '#brizo-extension',
-      store: _store__WEBPACK_IMPORTED_MODULE_1__.default,
+      store: _stores_content_store__WEBPACK_IMPORTED_MODULE_1__.default,
       render: function render(createElement) {
         return createElement(_components_Popup_Popup__WEBPACK_IMPORTED_MODULE_2__.default);
       }
@@ -60,6 +62,116 @@ window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
 
   return true;
 });
+
+/***/ }),
+
+/***/ "./assets/js/helpers/create-list-store.js":
+/*!************************************************!*\
+  !*** ./assets/js/helpers/create-list-store.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createListStore": () => /* binding */ createListStore
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../plugins/extension */ "./assets/js/plugins/extension.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+/**
+ * @param {Object<string, import('vuex').Module>} modules
+ * @param {string} entity
+ * @param {function} sorter
+ * @param {function} adapter
+ * @param {Object} state
+ * @param {Object} getters
+ * @param {Object} mutations
+ * @param {Object} actions
+ * @returns {import('vuex').Module}
+ */
+
+var createListStore = function createListStore(_ref) {
+  var modules = _ref.modules,
+      entity = _ref.entity,
+      _ref$adapter = _ref.adapter,
+      adapter = _ref$adapter === void 0 ? function (item) {
+    return item;
+  } : _ref$adapter,
+      _ref$state = _ref.state,
+      state = _ref$state === void 0 ? {} : _ref$state,
+      _ref$getters = _ref.getters,
+      getters = _ref$getters === void 0 ? {} : _ref$getters,
+      _ref$mutations = _ref.mutations,
+      mutations = _ref$mutations === void 0 ? {} : _ref$mutations,
+      _ref$actions = _ref.actions,
+      actions = _ref$actions === void 0 ? {} : _ref$actions;
+  return {
+    modules: modules,
+    namespaced: true,
+    state: _objectSpread({
+      list: []
+    }, state),
+    getters: _objectSpread({}, getters),
+    mutations: _objectSpread({
+      add: function add(state, item) {
+        state.list.push(item);
+        _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+      },
+      past: function past(state, _ref2) {
+        var item = _ref2.item,
+            index = _ref2.index;
+        state.list.splice(index, 0, item);
+      },
+      set: function set(state, updatedState) {
+        for (var key in updatedState) {
+          state[key] = updatedState[key];
+        }
+      },
+      del: function del(state, index) {
+        state.list.splice(index, 1);
+        _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+      }
+    }, mutations),
+    actions: _objectSpread({
+      create: function create(context, model) {
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.post(entity, adapter(model));
+
+                case 2:
+                  return _context.abrupt("return", _context.sent);
+
+                case 3:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      }
+    }, actions)
+  };
+};
 
 /***/ }),
 
@@ -100,6 +212,11 @@ var Extension = /*#__PURE__*/function () {
       this.storage.sync.get(keys, callback);
     }
   }, {
+    key: "storageSyncOnChanged",
+    value: function storageSyncOnChanged(callback) {
+      this.storage.onChanged.addListener(callback);
+    }
+  }, {
     key: "storageSyncClear",
     value: function storageSyncClear() {
       this.storage.sync.clear();
@@ -117,6 +234,24 @@ var Extension = /*#__PURE__*/function () {
       this.runtime.onMessage.addListener(callback);
     }
   }, {
+    key: "tabQuery",
+    value: function tabQuery(params, callback) {
+      this.tabs.query(params, callback);
+    }
+  }, {
+    key: "tabSendMessage",
+    value: function tabSendMessage(_ref) {
+      var id = _ref.id,
+          payload = _ref.payload,
+          callback = _ref.callback;
+      this.tabs.sendMessage(id, payload, callback);
+    }
+  }, {
+    key: "tabCreate",
+    value: function tabCreate(params) {
+      this.tabs.create(params);
+    }
+  }, {
     key: "runtime",
     get: function get() {
       return this.extension.runtime;
@@ -125,6 +260,11 @@ var Extension = /*#__PURE__*/function () {
     key: "storage",
     get: function get() {
       return this.extension.storage;
+    }
+  }, {
+    key: "tabs",
+    get: function get() {
+      return this.extension.tabs;
     }
   }]);
 
@@ -158,10 +298,10 @@ var ResetPlugin = function ResetPlugin(store) {
 
 /***/ }),
 
-/***/ "./assets/js/store.js":
-/*!****************************!*\
-  !*** ./assets/js/store.js ***!
-  \****************************/
+/***/ "./assets/js/stores/content/store.js":
+/*!*******************************************!*\
+  !*** ./assets/js/stores/content/store.js ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -171,22 +311,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _plugins_reset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./plugins/reset */ "./assets/js/plugins/reset.js");
-/* harmony import */ var _stores_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/user */ "./assets/js/stores/user.js");
+/* harmony import */ var _plugins_reset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../plugins/reset */ "./assets/js/plugins/reset.js");
+/* harmony import */ var _deals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../deals */ "./assets/js/stores/deals.js");
 
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_2__.default.use(vuex__WEBPACK_IMPORTED_MODULE_3__.default); // const DOMAIN = 'brizo.ru/api';
-
-var DOMAIN = 'ozlaalfa.ru/api';
+vue__WEBPACK_IMPORTED_MODULE_2__.default.use(vuex__WEBPACK_IMPORTED_MODULE_3__.default);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_3__.default.Store({
   plugins: [_plugins_reset__WEBPACK_IMPORTED_MODULE_0__.ResetPlugin],
   modules: {
-    user: _stores_user__WEBPACK_IMPORTED_MODULE_1__.default
+    deals: _deals__WEBPACK_IMPORTED_MODULE_1__.default
   },
   state: {
-    route: "https://".concat(DOMAIN)
+    isOpenedPopup: false,
+    hideInspector: false
   },
   mutations: {
     set: function set(state, updatedState) {
@@ -200,10 +339,10 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_3__.default.Store({
 
 /***/ }),
 
-/***/ "./assets/js/stores/user.js":
-/*!**********************************!*\
-  !*** ./assets/js/stores/user.js ***!
-  \**********************************/
+/***/ "./assets/js/stores/deals.js":
+/*!***********************************!*\
+  !*** ./assets/js/stores/deals.js ***!
+  \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -213,284 +352,69 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _helpers_create_list_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helpers/create-list-store */ "./assets/js/helpers/create-list-store.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../plugins/extension */ "./assets/js/plugins/extension.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
- // const DOMAIN = 'brizo.ru/api';
-
-var DOMAIN = 'ozlaalfa.ru/api';
-var ROUTE = "https://".concat(DOMAIN);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  namespaced: true,
-  state: {
-    currentUser: null,
-    pending: false,
-    unread_notifications_count: 0,
-    deals: [],
-    contents: [],
-    isOpenedPopup: false,
-    hideInspector: false
-  },
-  mutations: {
-    set: function set(state, updatedState) {
-      for (var key in updatedState) {
-        state[key] = updatedState[key];
-      }
-    },
-    add: function add(state, _ref) {
-      var key = _ref.key,
-          value = _ref.value;
-      state[key].push(value);
-    },
-    removeContents: function removeContents(state, index) {
-      state.contents.splice(index, 1);
-      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet({
-        contents: state.contents
-      });
-    },
-    setContent: function setContent(state, _ref2) {
-      var key = _ref2.key,
-          value = _ref2.value;
-      state[key] = value;
-      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, key, value));
-    }
-  },
-  getters: {
-    user: function user(state) {
-      return state.currentUser;
-    },
-    isActive: function isActive(state, getters) {
-      var _getters$user;
-
-      return (_getters$user = getters.user) === null || _getters$user === void 0 ? void 0 : _getters$user.is_active;
-    },
-    project: function project(state, getters) {
-      var _getters$user2;
-
-      return (_getters$user2 = getters.user) === null || _getters$user2 === void 0 ? void 0 : _getters$user2.project;
-    },
-    avatar: function avatar(state, getters) {
-      var _getters$user3;
-
-      return (_getters$user3 = getters.user) === null || _getters$user3 === void 0 ? void 0 : _getters$user3.avatar_url;
-    },
-    subDomain: function subDomain(state, getters) {
-      var _getters$project;
-
-      return (_getters$project = getters.project) === null || _getters$project === void 0 ? void 0 : _getters$project.domain;
-    },
-    deals: function deals(state) {
-      return state.deals;
-    }
-  },
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_helpers_create_list_store__WEBPACK_IMPORTED_MODULE_1__.createListStore)({
+  entity: 'deals',
   actions: {
-    setUser: function setUser(_ref3) {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var commit, _yield$Vue$http$get, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                commit = _ref3.commit;
-                commit('set', {
-                  pending: true
-                });
-                _context.prev = 2;
-                _context.next = 5;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("".concat(ROUTE, "/me"));
-
-              case 5:
-                _yield$Vue$http$get = _context.sent;
-                data = _yield$Vue$http$get.data;
-                commit('set', {
-                  currentUser: data
-                });
-                commit('set', {
-                  route: "https://".concat(data.project.domain, ".").concat(DOMAIN)
-                }, {
-                  root: true
-                });
-
-              case 9:
-                _context.prev = 9;
-                commit('set', {
-                  pending: false
-                });
-                return _context.finish(9);
-
-              case 12:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[2,, 9, 12]]);
-      }))();
-    },
-    fetchUser: function fetchUser(_ref4) {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var commit, res, _e$response;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                commit = _ref4.commit;
-                commit('set', {
-                  pending: true
-                });
-                _context2.prev = 2;
-                _context2.next = 5;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get('me');
-
-              case 5:
-                res = _context2.sent;
-                commit('set', {
-                  currentUser: res.data,
-                  unread_notifications_count: res.data.unread_notifications_count
-                });
-                return _context2.abrupt("return", res.data);
-
-              case 10:
-                _context2.prev = 10;
-                _context2.t0 = _context2["catch"](2);
-
-                if (((_e$response = _context2.t0.response) === null || _e$response === void 0 ? void 0 : _e$response.status) === 401) {
-                  commit('set', {
-                    currentUser: null
-                  });
-                }
-
-              case 13:
-                _context2.prev = 13;
-                commit('set', {
-                  pending: false
-                });
-                return _context2.finish(13);
-
-              case 16:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, null, [[2, 10, 13, 16]]);
-      }))();
-    },
-    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref5) {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        var commit, rootState, _yield$Vue$http$get2, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                commit = _ref5.commit, rootState = _ref5.rootState;
-                _context3.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("notifications/unread");
-
-              case 3:
-                _yield$Vue$http$get2 = _context3.sent;
-                data = _yield$Vue$http$get2.data;
-                commit('set', {
-                  unread_notifications_count: data.unread_notifications_count
-                });
-
-              case 6:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-    fetchTransactions: function fetchTransactions(_ref6) {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
-        var rootState, _yield$Vue$http$get3, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                rootState = _ref6.rootState;
-                _context4.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("transactions/table", {
-                  limit: 50,
-                  offset: 0,
-                  order_column: 'transacted_and_accured',
-                  order_by: 'desc'
-                });
-
-              case 3:
-                _yield$Vue$http$get3 = _context4.sent;
-                data = _yield$Vue$http$get3.data;
-                return _context4.abrupt("return", data);
-
-              case 6:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4);
-      }))();
-    },
-    createDeals: function createDeals(_ref7) {
-      var getters = _ref7.getters,
-          state = _ref7.state;
-      state.contents.forEach( /*#__PURE__*/function () {
-        var _ref8 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(item) {
+    createDeals: function createDeals(_ref) {
+      var state = _ref.state,
+          rootGetters = _ref.rootGetters;
+      state.list.forEach( /*#__PURE__*/function () {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(item) {
           var _item$budget, _yield$Vue$http$post, data;
 
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
             while (1) {
-              switch (_context5.prev = _context5.next) {
+              switch (_context.prev = _context.next) {
                 case 0:
-                  _context5.prev = 0;
-                  _context5.next = 3;
+                  _context.prev = 0;
+                  _context.next = 3;
                   return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.post("deals", {
                     budget: Number((_item$budget = item.budget) === null || _item$budget === void 0 ? void 0 : _item$budget.replace(/\D/g, '')),
                     description: item.description,
-                    currency_id: getters.project.default_currency.id,
-                    members: [getters.user.id],
+                    currency_id: rootGetters['user/project'].default_currency.id,
+                    members: [rootGetters['user/user'].id],
                     name: item.name,
-                    responsible_id: getters.user.id,
+                    responsible_id: rootGetters['user/user'].id,
                     status_id: 5425 // надо воронки подтянуть
 
                   });
 
                 case 3:
-                  _yield$Vue$http$post = _context5.sent;
+                  _yield$Vue$http$post = _context.sent;
                   data = _yield$Vue$http$post.data;
                   state.deals.push(data);
-                  return _context5.abrupt("return", data);
+                  return _context.abrupt("return", data);
 
                 case 9:
-                  _context5.prev = 9;
-                  _context5.t0 = _context5["catch"](0);
-                  console.log(_context5.t0);
+                  _context.prev = 9;
+                  _context.t0 = _context["catch"](0);
+                  console.log(_context.t0);
 
                 case 12:
                 case "end":
-                  return _context5.stop();
+                  return _context.stop();
               }
             }
-          }, _callee5, null, [[0, 9]]);
+          }, _callee, null, [[0, 9]]);
         }));
 
         return function (_x) {
-          return _ref8.apply(this, arguments);
+          return _ref2.apply(this, arguments);
         };
       }());
     }
   }
-});
+}));
 
 /***/ }),
 
@@ -608,12 +532,16 @@ var POPUP_TOP = 20;
   beforeDestroy: function beforeDestroy() {
     this.stopInspection();
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)('user', ['isOpenedPopup', 'hideInspector', 'contents'])), {}, {
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)(['isOpenedPopup', 'hideInspector'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)({
+    deals: function deals(state) {
+      return state.deals.list;
+    }
+  })), {}, {
     inspectorSelect: function inspectorSelect() {
       return document.getElementById('brizo-inspector__select') || null;
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)('user', ['add', 'set'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)('user', ['createDeals'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)('deals', ['add'])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)(['set'])), {}, {
     closeInspector: function closeInspector() {
       this.set({
         hideInspector: true
@@ -626,24 +554,18 @@ var POPUP_TOP = 20;
     },
     setDeal: function setDeal() {
       if (this.element.name) {
-        this.add({
-          key: 'contents',
-          value: this.element
-        });
+        this.add(this.element);
         this.element = {};
         this.createDeal();
       }
     },
     createDeal: function createDeal() {
       var payload = {
-        contents: this.contents,
+        deals: this.deals,
         isOpenedPopup: false,
         isInspection: false
       };
       this.$Extension.runtimeSendMessage(payload);
-      this.$Extension.storageSyncSet({
-        contents: this.contents
-      });
     },
     startInspection: function startInspection() {
       this.appendInspectorElement();
@@ -2430,7 +2352,7 @@ var render = function() {
             "section",
             { staticClass: "brizo-extension__content" },
             [
-              _vm.contents.length
+              _vm.deals.length
                 ? _c(
                     "div",
                     { staticClass: "brizo-extension__row" },
@@ -2441,7 +2363,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("tags", {
                         attrs: {
-                          items: _vm.contents.map(function(item) {
+                          items: _vm.deals.map(function(item) {
                             return item.name
                           })
                         }

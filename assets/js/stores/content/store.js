@@ -1,20 +1,17 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import { ResetPlugin } from './plugins/reset';
-import user from './stores/user';
+import { ResetPlugin } from '../../plugins/reset';
+import deals from '../deals';
 
 Vue.use(Vuex);
 
-// const DOMAIN = 'brizo.ru/api';
-const DOMAIN = 'ozlaalfa.ru/api';
-
 const store = new Vuex.Store({
   plugins: [ResetPlugin],
-  modules: { user },
+  modules: { deals },
   state: {
-    route: `https://${DOMAIN}`,
+    isOpenedPopup: false,
+    hideInspector: false,
   },
-
   mutations: {
     set(state, updatedState) {
       for (const key in updatedState) {

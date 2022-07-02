@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     linkTo() {
-      window.chrome.tabs.create({ url: 'https://brizo.ru/cabinet/' });
+      this.$Extension.tabCreate({ url: 'https://brizo.ru/cabinet/' });
     },
   },
 };
