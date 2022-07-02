@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import { prototypeExtension } from './plugins/extension';
 import api from './plugins/axios';
-import store from './store';
+import store from './stores/view/store';
 
 store.dispatch('user/setUser');
 
@@ -11,21 +11,25 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-prototypeExtension.storageSyncGet(['contents'], (params) => {
+prototypeExtension.storageSyncGet(['deals'], (params) => {
+  console.log(params, 'storageSyncGet');
   for (const key in params) {
-    store.commit('user/set', { [key]: params[key] });
+    store.commit(`${key}/set`, { list: params[key] });
   }
 });
 
-prototypeExtension.storageSyncOnChanged(['contents'], (params) => {
+prototypeExtension.storageSyncOnChanged(['deals'], (params) => {
+  console.log(params, 'storageSyncOnChanged');
+
   for (const key in params) {
-    store.commit('user/set', { [key]: params[key] });
+    store.commit(`${key}/set`, { list: params[key] });
   }
 });
 
-prototypeExtension.runtimeOnMessage(function (req, sender, response) {
-  for (const key in req) {
-    store.commit('user/set', { [key]: req[key] });
+prototypeExtension.runtimeOnMessage(function (params, sender, response) {
+  console.log(params, 'runtimeOnMessage');
+  for (const key in params) {
+    store.commit(`${key}/set`, { list: params[key] });
   }
 });
 

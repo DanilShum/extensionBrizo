@@ -40,7 +40,6 @@ export default {
     this.fetchUnreadNotificationsCount();
   },
   computed: {
-    ...mapState('user', ['contents']),
     viewComponent() {
       return this.views[this.activeViewIndex];
     },

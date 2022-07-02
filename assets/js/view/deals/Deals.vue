@@ -1,38 +1,40 @@
 <template>
   <div class="deals">
     СДЕЛКИ
-    <div v-for="(deal, index) in contents" :key="index" class="deals__item">
+    <div v-for="(deal, index) in deals" :key="index" class="deals__item">
       <div>
         <p>Бюджет: {{ deal.budget }}</p>
         <p>Название: {{ deal.name }}</p>
         <p>Описание: {{ deal.description }}</p>
       </div>
-      <base-button text="Убрать" @click="removeContents(index)" />
+      <base-button text="Убрать" @click="del(index)" />
     </div>
 
-    <base-button v-if="contents.length" type="button" text="Создать сделки" @click="createDeals" />
+    <base-button v-if="deals.length" type="button" text="Создать сделки" @click="createDeals" />
     <base-button type="button" text="Начать инспекцию" @click="inspection" />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import BaseButton from '../../components/buttons/BaseButton';
 
 export default {
   name: 'Deals',
   components: { BaseButton },
   computed: {
-    ...mapGetters('user', ['deals']),
-    ...mapState('user', ['contents']),
+    ...mapState({
+      deals: (state) => state.deals.list,
+    }),
   },
   methods: {
-    ...mapActions('user', ['createDeals']),
-    ...mapMutations('user', ['removeContents']),
+    ...mapActions('deals', ['createDeals']),
+    ...mapMutations('deals', ['del']),
     inspection() {
       const payload = {
         inspection: true,
-        contents: this.contents,
+        deals: this.deals,
+        entity: 'deals',
       };
       this.$Extension.tabQuery({ active: true, currentWindow: true }, (tabs) => {
         this.$Extension.tabSendMessage({ id: tabs[0].id, payload });

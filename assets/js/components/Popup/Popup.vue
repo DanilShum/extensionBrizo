@@ -14,9 +14,9 @@
         <base-button text="Close" @click="closeInspector" />
       </header>
       <section class="brizo-extension__content">
-        <div v-if="contents.length" class="brizo-extension__row">
+        <div v-if="deals.length" class="brizo-extension__row">
           <div class="brizo-extension__sub-title">Сделки для создания сделки:</div>
-          <tags :items="contents.map((item) => item.name)" />
+          <tags :items="deals.map((item) => item.name)" />
         </div>
         <div class="brizo-extension__row">
           <div class="brizo-extension__sub-title">Выбранные параметры сделки:</div>
@@ -91,14 +91,17 @@ export default {
     this.stopInspection();
   },
   computed: {
-    ...mapState('user', ['isOpenedPopup', 'hideInspector', 'contents']),
+    ...mapState(['isOpenedPopup', 'hideInspector']),
+    ...mapState({
+      deals: (state) => state.deals.list,
+    }),
     inspectorSelect() {
       return document.getElementById('brizo-inspector__select') || null;
     },
   },
   methods: {
-    ...mapMutations('user', ['add', 'set']),
-    ...mapActions('user', ['createDeals']),
+    ...mapMutations('deals', ['add']),
+    ...mapMutations(['set']),
     closeInspector() {
       this.set({ hideInspector: true });
       this.setInspection(false);
@@ -109,19 +112,18 @@ export default {
     },
     setDeal() {
       if (this.element.name) {
-        this.add({ key: 'contents', value: this.element });
+        this.add(this.element);
         this.element = {};
         this.createDeal();
       }
     },
     createDeal() {
       const payload = {
-        contents: this.contents,
+        deals: this.deals,
         isOpenedPopup: false,
         isInspection: false,
       };
       this.$Extension.runtimeSendMessage(payload);
-      this.$Extension.storageSyncSet({ contents: this.contents });
     },
     startInspection() {
       this.appendInspectorElement();
