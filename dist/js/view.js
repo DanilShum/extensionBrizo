@@ -2426,16 +2426,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _plugins_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../plugins/extension */ "./assets/js/plugins/extension.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
  // const DOMAIN = 'brizo.ru/api';
 
@@ -2446,21 +2442,13 @@ var ROUTE = "https://".concat(DOMAIN);
   state: {
     currentUser: null,
     pending: false,
-    unread_notifications_count: 0,
-    deals: [],
-    contents: []
+    unread_notifications_count: 0
   },
   mutations: {
     set: function set(state, updatedState) {
       for (var key in updatedState) {
         state[key] = updatedState[key];
       }
-    },
-    setContent: function setContent(state, _ref) {
-      var key = _ref.key,
-          value = _ref.value;
-      state[key] = value;
-      _plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, key, value));
     }
   },
   getters: {
@@ -2489,7 +2477,7 @@ var ROUTE = "https://".concat(DOMAIN);
     }
   },
   actions: {
-    setUser: function setUser(_ref2) {
+    setUser: function setUser(_ref) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         var commit, _yield$Vue$http$get, data;
 
@@ -2497,13 +2485,13 @@ var ROUTE = "https://".concat(DOMAIN);
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                commit = _ref2.commit;
+                commit = _ref.commit;
                 commit('set', {
                   pending: true
                 });
                 _context.prev = 2;
                 _context.next = 5;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("".concat(ROUTE, "/me"));
+                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get("".concat(ROUTE, "/me"));
 
               case 5:
                 _yield$Vue$http$get = _context.sent;
@@ -2532,7 +2520,7 @@ var ROUTE = "https://".concat(DOMAIN);
         }, _callee, null, [[2,, 9, 12]]);
       }))();
     },
-    fetchUser: function fetchUser(_ref3) {
+    fetchUser: function fetchUser(_ref2) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
         var commit, res, _e$response;
 
@@ -2540,13 +2528,13 @@ var ROUTE = "https://".concat(DOMAIN);
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                commit = _ref3.commit;
+                commit = _ref2.commit;
                 commit('set', {
                   pending: true
                 });
                 _context2.prev = 2;
                 _context2.next = 5;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get('me');
+                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get('me');
 
               case 5:
                 res = _context2.sent;
@@ -2581,7 +2569,7 @@ var ROUTE = "https://".concat(DOMAIN);
         }, _callee2, null, [[2, 10, 13, 16]]);
       }))();
     },
-    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref4) {
+    fetchUnreadNotificationsCount: function fetchUnreadNotificationsCount(_ref3) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
         var commit, _yield$Vue$http$get2, data;
 
@@ -2589,9 +2577,9 @@ var ROUTE = "https://".concat(DOMAIN);
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                commit = _ref4.commit;
+                commit = _ref3.commit;
                 _context3.next = 3;
-                return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get("notifications/unread");
+                return vue__WEBPACK_IMPORTED_MODULE_1__.default.http.get("notifications/unread");
 
               case 3:
                 _yield$Vue$http$get2 = _context3.sent;
@@ -2634,8 +2622,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_3__.default.use(vuex__WEBPACK_IMPORTED_MODULE_4__.default);
-console.log(_deals__WEBPACK_IMPORTED_MODULE_2__.default); // const DOMAIN = 'brizo.ru/api';
+vue__WEBPACK_IMPORTED_MODULE_3__.default.use(vuex__WEBPACK_IMPORTED_MODULE_4__.default); // const DOMAIN = 'brizo.ru/api';
 
 var DOMAIN = 'ozlaalfa.ru/api';
 var store = new vuex__WEBPACK_IMPORTED_MODULE_4__.default.Store({
@@ -3164,7 +3151,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           id: tabs[0].id,
           payload: payload
         });
-      }); // window.close();
+      });
+      window.close();
     }
   })
 });
