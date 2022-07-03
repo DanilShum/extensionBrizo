@@ -50,6 +50,10 @@ export const createListStore = ({
     ...mutations,
   },
   actions: {
+    async fetch({ commit }, model) {
+      const { data } = await Vue.http.get(entity, adapter(model));
+      commit('set', { list: data.data });
+    },
     async create(context, model) {
       return await Vue.http.post(entity, adapter(model));
     },

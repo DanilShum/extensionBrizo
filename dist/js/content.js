@@ -149,24 +149,51 @@ var createListStore = function createListStore(_ref) {
       }
     }, mutations),
     actions: _objectSpread({
-      create: function create(context, model) {
+      fetch: function fetch(_ref3, model) {
         return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+          var commit, _yield$Vue$http$get, data;
+
           return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  _context.next = 2;
-                  return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.post(entity, adapter(model));
-
-                case 2:
-                  return _context.abrupt("return", _context.sent);
+                  commit = _ref3.commit;
+                  _context.next = 3;
+                  return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.get(entity, adapter(model));
 
                 case 3:
+                  _yield$Vue$http$get = _context.sent;
+                  data = _yield$Vue$http$get.data;
+                  commit('set', {
+                    list: data.data
+                  });
+
+                case 6:
                 case "end":
                   return _context.stop();
               }
             }
           }, _callee);
+        }))();
+      },
+      create: function create(context, model) {
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.next = 2;
+                  return vue__WEBPACK_IMPORTED_MODULE_2__.default.http.post(entity, adapter(model));
+
+                case 2:
+                  return _context2.abrupt("return", _context2.sent);
+
+                case 3:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
         }))();
       }
     }, actions)
@@ -368,6 +395,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     createDeals: function createDeals(_ref) {
       var state = _ref.state,
           rootGetters = _ref.rootGetters;
+      console.log(rootGetters['funnels/currentFunnel'], rootGetters['funnels/currentFunnel'].statuses[0].id);
       state.list.forEach( /*#__PURE__*/function () {
         var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(item) {
           var _item$budget, _yield$Vue$http$post, data;
@@ -385,7 +413,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     members: [rootGetters['user/user'].id],
                     name: item.name,
                     responsible_id: rootGetters['user/user'].id,
-                    status_id: 5425 // надо воронки подтянуть
+                    status_id: rootGetters['funnels/currentFunnel'].statuses[1].id // надо воронки подтянуть
 
                   });
 
@@ -581,22 +609,24 @@ var POPUP_TOP = 20;
       this.selectStyle.opacity = '0';
     },
     hoverPageElement: function hoverPageElement(e) {
-      var _el$offsetParent, _el$offsetParent2;
+      var _el$offsetParent, _el$offsetParent2, _el$offsetParent3;
 
       var el = e.target;
 
-      if (el && el.className !== 'brizo-extension brizo-extension_inspector' && el.className !== 'brizo-extension brizo-inspector__select-wrapper' && ((_el$offsetParent = el.offsetParent) === null || _el$offsetParent === void 0 ? void 0 : _el$offsetParent.className) !== 'brizo-extension brizo-extension_inspector' && ((_el$offsetParent2 = el.offsetParent) === null || _el$offsetParent2 === void 0 ? void 0 : _el$offsetParent2.className) !== 'brizo-extension brizo-inspector__select-wrapper') {
-        var _el$getBoundingClient = el.getBoundingClientRect(),
-            left = _el$getBoundingClient.left,
-            top = _el$getBoundingClient.top,
-            height = _el$getBoundingClient.height,
-            width = _el$getBoundingClient.width;
-
-        this.inspector.style.left = left + 'px';
-        this.inspector.style.top = top + 'px';
-        this.inspector.style.height = height + 'px';
-        this.inspector.style.width = width + 'px';
+      if (!el || el.className.includes('brizo-extension_inspector') || el.className.includes('brizo-inspector__select-wrapper') || el.className.includes('brizo-extension-wrapper') || (_el$offsetParent = el.offsetParent) !== null && _el$offsetParent !== void 0 && _el$offsetParent.className.includes('brizo-extension_inspector') || (_el$offsetParent2 = el.offsetParent) !== null && _el$offsetParent2 !== void 0 && _el$offsetParent2.className.includes('brizo-extension-wrapper') || (_el$offsetParent3 = el.offsetParent) !== null && _el$offsetParent3 !== void 0 && _el$offsetParent3.className.includes('brizo-inspector__select-wrapper')) {
+        return;
       }
+
+      var _el$getBoundingClient = el.getBoundingClientRect(),
+          left = _el$getBoundingClient.left,
+          top = _el$getBoundingClient.top,
+          height = _el$getBoundingClient.height,
+          width = _el$getBoundingClient.width;
+
+      this.inspector.style.left = left + 'px';
+      this.inspector.style.top = top + 'px';
+      this.inspector.style.height = height + 'px';
+      this.inspector.style.width = width + 'px';
     },
     createInspectorElement: function createInspectorElement() {
       var inspector = document.createElement('div');
@@ -760,7 +790,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".brizo-extension-wrapper_hide {\n  opacity: 0;\n}\n.brizo-extension-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-extension-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-extension {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n  position: fixed;\n  top: 60px;\n  right: 100px;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-extension__header {\n  display: flex;\n  justify-content: space-between;\n}\n.brizo-extension__content {\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-extension__actions {\n  display: flex;\n}\n.brizo-extension__drag {\n  top: 0;\n  left: 0;\n  right: 0;\n  margin: 0 auto;\n  position: absolute;\n  width: 30px;\n  height: 30px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n  background-color: #e74c3c;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n}\n.brizo-extension__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-extension__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-extension__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".brizo-extension-wrapper_hide {\n  opacity: 0;\n}\n.brizo-extension-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-extension-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-extension {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n  position: fixed;\n  top: 60px;\n  right: 100px;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-extension__header {\n  display: flex;\n  justify-content: space-between;\n}\n.brizo-extension__content {\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-extension__actions {\n  display: flex;\n}\n.brizo-extension__drag {\n  top: 0;\n  left: 0;\n  right: 0;\n  margin: 0 auto;\n  position: absolute;\n  width: 30px;\n  height: 30px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n  background-color: #e74c3c;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  max-height: 72px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n}\n.brizo-inspector__select {\n  border: none;\n  padding: 4px;\n  width: 100%;\n}\n.brizo-inspector__select option {\n  height: 24px;\n  display: flex;\n  align-items: center;\n}\n.brizo-inspector__select option:hover {\n  background-color: rgba(95, 108, 118, 0.05);\n}\n.brizo-extension__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-extension__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-extension__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -14,7 +14,7 @@ export default createListStore({
             members: [rootGetters['user/user'].id],
             name: item.name,
             responsible_id: rootGetters['user/user'].id,
-            status_id: 5425, // надо воронки подтянуть
+            status_id: rootGetters['funnels/currentFunnel'].statuses[1].id,
           });
 
           state.deals.push(data);
