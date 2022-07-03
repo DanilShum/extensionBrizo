@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import BaseButton from '../buttons/BaseButton';
 import Tags from '../Tags';
 
@@ -143,18 +143,21 @@ export default {
     hoverPageElement(e) {
       const el = e.target;
       if (
-        el &&
-        el.className !== 'brizo-extension brizo-extension_inspector' &&
-        el.className !== 'brizo-extension brizo-inspector__select-wrapper' &&
-        el.offsetParent?.className !== 'brizo-extension brizo-extension_inspector' &&
-        el.offsetParent?.className !== 'brizo-extension brizo-inspector__select-wrapper'
+        !el ||
+        el.className.includes('brizo-extension_inspector') ||
+        el.className.includes('brizo-inspector__select-wrapper') ||
+        el.className.includes('brizo-extension-wrapper') ||
+        el.offsetParent?.className.includes('brizo-extension_inspector') ||
+        el.offsetParent?.className.includes('brizo-extension-wrapper') ||
+        el.offsetParent?.className.includes('brizo-inspector__select-wrapper')
       ) {
-        const { left, top, height, width } = el.getBoundingClientRect();
-        this.inspector.style.left = left + 'px';
-        this.inspector.style.top = top + 'px';
-        this.inspector.style.height = height + 'px';
-        this.inspector.style.width = width + 'px';
+        return;
       }
+      const { left, top, height, width } = el.getBoundingClientRect();
+      this.inspector.style.left = left + 'px';
+      this.inspector.style.top = top + 'px';
+      this.inspector.style.height = height + 'px';
+      this.inspector.style.width = width + 'px';
     },
     createInspectorElement() {
       const inspector = document.createElement('div');
@@ -291,13 +294,29 @@ export default {
 .brizo-inspector__select-wrapper {
   min-width: 150px;
   min-height: 80px;
+  max-height: 72px;
   opacity: 0;
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: 999;
+  background-color: white;
+  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);
+  border-radius: 5px;
 }
 .brizo-inspector__select {
+  border: none;
+  padding: 4px;
+  width: 100%;
+
+  option {
+    height: 24px;
+    display: flex;
+    align-items: center;
+  }
+  option:hover {
+    background-color: rgba(#5f6c76, 0.05);
+  }
 }
 
 .brizo-extension__row {

@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import Profile from '../components/Profile';
 import Spinner from '../components/Spinner';
 import Deals from './deals/Deals';
@@ -35,9 +35,8 @@ export default {
     activeViewIndex: 0,
     views: [Profile, Deals],
   }),
-  async created() {
-    await this.fetchUser();
-    this.fetchUnreadNotificationsCount();
+  created() {
+    this.initialFetch();
   },
   computed: {
     viewComponent() {
@@ -45,7 +44,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('user', ['fetchUser', 'fetchUnreadNotificationsCount']),
+    ...mapActions(['initialFetch']),
     prevView() {
       const index = this.views.length - 1;
       if (!this.activeViewIndex) {
