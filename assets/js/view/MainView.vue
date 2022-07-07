@@ -2,16 +2,11 @@
   <div class="wrapper">
     <div class="main-view__content">
       <base-button @click="prevView">
-        <img
-          slot="center"
-          src="images/angle-right.svg"
-          alt="arrow"
-          class="main-view__content__arrow-left"
-        />
+        <base-icon slot="center" name="angle-right" flip-x />
       </base-button>
       <component :is="viewComponent" />
       <base-button @click="nextView">
-        <img slot="center" src="images/angle-right.svg" alt="arrow" />
+        <base-icon slot="center" name="angle-right" />/>
       </base-button>
     </div>
   </div>
@@ -22,10 +17,11 @@ import Profile from '../components/Profile';
 import Spinner from '../components/Spinner';
 import Deals from './deals/Deals';
 import BaseButton from '../components/buttons/BaseButton';
+import BaseIcon from '../components/Icon/BaseIcon';
 
 export default {
   name: 'MainView',
-  components: { BaseButton, Deals, Spinner, Profile },
+  components: { BaseIcon, BaseButton, Deals, Spinner, Profile },
   data: () => ({
     active: true,
     icons: {
