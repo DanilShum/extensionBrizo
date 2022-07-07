@@ -1,52 +1,39 @@
 import Vue from 'vue';
-import store from './store';
 import App from './App.vue';
+import { prototypeExtension } from './plugins/extension';
 import api from './plugins/axios';
+import store from './stores/view/store';
 
-// const DOMAIN = 'brizo.ru/api';
-const DOMAIN = 'ozlaalfa.ru/api';
-const ROUTE = `https://${DOMAIN}`;
-
-const getUser = async () => {
-  store.commit('user/set', { pending: true });
-
-  try {
-    const { data } = await api.get(`${ROUTE}/me`);
-    store.commit('user/set', { currentUser: data });
-
-    store.commit('set', { route: `https://${data.project.domain}.${DOMAIN}` });
-  } finally {
-    store.commit('user/set', { pending: false });
-  }
-};
-
-getUser();
+store.dispatch('user/setUser');
 
 api.interceptors.request.use(async (config) => {
   config.baseURL = store.state.route;
   return config;
 });
 
-window.chrome.storage.sync.get(['contents'], (state) => {
-  for (const key in state) {
-    store.commit('user/set', { [key]: state[key] });
+prototypeExtension.storageSyncGet(['deals'], (params) => {
+  console.log(params, 'storageSyncGet');
+  for (const key in params) {
+    store.commit(`${key}/set`, { list: params[key] });
   }
 });
 
-// window.chrome.storage.onChanged.addListener(function (changes) {
-//   for (const key in changes) {
-//     store.commit('user/set', { [key]: changes[key].newValue });
-//   }
-// });
+prototypeExtension.storageSyncOnChanged(['deals'], (params) => {
+  console.log(params, 'storageSyncOnChanged');
 
-window.chrome.runtime.onMessage.addListener(function (req, sender, response) {
-  for (const key in req) {
-    store.commit('user/set', { [key]: req[key] });
-    window.chrome.storage.sync.set({ [key]: req[key] });
-
-    console.log(store.state, 'SETTT');
+  for (const key in params) {
+    store.commit(`${key}/set`, { list: params[key] });
   }
 });
+
+prototypeExtension.runtimeOnMessage(function (params, sender, response) {
+  console.log(params, 'runtimeOnMessage');
+  for (const key in params) {
+    store.commit(`${key}/set`, { list: params[key] });
+  }
+});
+
+Vue.prototype.$Extension = prototypeExtension;
 
 new Vue({
   el: '#app',

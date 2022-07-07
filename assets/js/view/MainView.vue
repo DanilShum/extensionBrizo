@@ -2,30 +2,26 @@
   <div class="wrapper">
     <div class="main-view__content">
       <base-button @click="prevView">
-        <img
-          slot="center"
-          src="images/angle-right.svg"
-          alt="arrow"
-          class="main-view__content__arrow-left"
-        />
+        <base-icon slot="center" name="angle-right" flip-x />
       </base-button>
       <component :is="viewComponent" />
       <base-button @click="nextView">
-        <img slot="center" src="images/angle-right.svg" alt="arrow" />
+        <base-icon slot="center" name="angle-right" />/>
       </base-button>
     </div>
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import Profile from '../components/Profile';
 import Spinner from '../components/Spinner';
 import Deals from './deals/Deals';
 import BaseButton from '../components/buttons/BaseButton';
+import BaseIcon from '../components/Icon/BaseIcon';
 
 export default {
   name: 'MainView',
-  components: { BaseButton, Deals, Spinner, Profile },
+  components: { BaseIcon, BaseButton, Deals, Spinner, Profile },
   data: () => ({
     active: true,
     icons: {
@@ -35,18 +31,16 @@ export default {
     activeViewIndex: 0,
     views: [Profile, Deals],
   }),
-  async created() {
-    await this.fetchUser();
-    this.fetchUnreadNotificationsCount();
+  created() {
+    this.initialFetch();
   },
   computed: {
-    ...mapState('user', ['contents']),
     viewComponent() {
       return this.views[this.activeViewIndex];
     },
   },
   methods: {
-    ...mapActions('user', ['fetchUser', 'fetchUnreadNotificationsCount']),
+    ...mapActions(['initialFetch']),
     prevView() {
       const index = this.views.length - 1;
       if (!this.activeViewIndex) {

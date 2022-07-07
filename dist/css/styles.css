@@ -1,3 +1,10 @@
+.brizo-extension-wrapper * {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
 .brizo-view {
   width: 356px;
   margin: 12px 24px 16px;
@@ -13,6 +20,6 @@
   z-index: 999;
 }
 
-.brizo-extension *:not(.brizo-inspector):not(.brizo-popup_inspector) {
+.brizo-crm-extension *:not(.brizo-inspector):not(.brizo-extension_inspector) {
   cursor: pointer !important;
 }

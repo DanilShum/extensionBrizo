@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { prototypeExtension } from '../plugins/extension';
 
 /**
  * @param {Object<string, import('vuex').Module>} modules
@@ -23,47 +24,38 @@ export const createListStore = ({
   modules,
   namespaced: true,
   state: {
-    ids: [],
+    list: [],
     ...state,
   },
   getters: {
     ...getters,
   },
   mutations: {
-    add(state, id) {
-      if (!state.ids.includes(id)) {
-        state.ids.push(id);
-      }
+    add(state, item) {
+      state.list.push(item);
+      prototypeExtension.storageSyncSet({ [entity]: state.list });
     },
     past(state, { item, index }) {
-      if (!state.ids.includes(item.id)) {
-        state.ids.splice(index, 0, item.id);
-      }
+      state.list.splice(index, 0, item);
     },
     set(state, updatedState) {
       for (const key in updatedState) {
         state[key] = updatedState[key];
       }
     },
-    del(state, id) {
-      const i = state.ids.indexOf(id);
-      if (i >= 0) {
-        state.ids.splice(i, 1);
-      }
+    del(state, index) {
+      state.list.splice(index, 1);
+      prototypeExtension.storageSyncSet({ [entity]: state.list });
     },
     ...mutations,
   },
   actions: {
-    async create({ commit }, model) {
-      const { data } = await Vue.http.post(entity, adapter(model));
-
-      commit('add', data.id);
-
-      return data;
+    async fetch({ commit }, model) {
+      const { data } = await Vue.http.get(entity, adapter(model));
+      commit('set', { list: data.data });
     },
-    async delete({ commit }, id) {
-      await Vue.http.delete(`${entity}/${id}`);
-      commit('del', id);
+    async create(context, model) {
+      return await Vue.http.post(entity, adapter(model));
     },
     ...actions,
   },
