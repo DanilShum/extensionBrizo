@@ -36,7 +36,7 @@ export default {
   computed: {
     iconComponent() {
       const file = `${this.name}.svg`;
-      return require(`../../../../dist/images/icons/${file}`).default;
+      // return require(`@/images/icons/${file}`).default;
     },
   },
 };

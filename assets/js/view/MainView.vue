@@ -13,15 +13,14 @@
 </template>
 <script>
 import { mapActions } from 'vuex';
-import Profile from '../components/Profile';
-import Spinner from '../components/Spinner';
-import Deals from './deals/Deals';
-import BaseButton from '../components/buttons/BaseButton';
-import BaseIcon from '../components/Icon/BaseIcon';
+import BaseButton from '@/js/components/buttons/BaseButton';
+import BaseIcon from '@/js/components/Icon/BaseIcon';
+import Profile from '@/js/components/Profile';
+import Deals from '@/js/view/deals/Deals';
 
 export default {
   name: 'MainView',
-  components: { BaseIcon, BaseButton, Deals, Spinner, Profile },
+  components: { BaseIcon, BaseButton },
   data: () => ({
     active: true,
     icons: {

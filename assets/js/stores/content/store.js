@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import { ResetPlugin } from '../../plugins/reset';
-import deals from '../deals';
+import { ResetPlugin } from '@/js/plugins/reset';
+import deals from '@/js/stores/deals';
 
 Vue.use(Vuex);
 
