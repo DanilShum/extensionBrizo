@@ -17,7 +17,7 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
-import BaseButton from '../../components/buttons/BaseButton';
+import BaseButton from '@/js/components/buttons/BaseButton';
 
 export default {
   name: 'Deals',

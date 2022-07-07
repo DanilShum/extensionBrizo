@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { prototypeExtension } from '../plugins/extension';
+import { prototypeExtension } from '@/js/plugins/extension';
 
 /**
  * @param {Object<string, import('vuex').Module>} modules

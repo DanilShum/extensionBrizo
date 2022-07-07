@@ -66,16 +66,16 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex';
-import BaseButton from '../buttons/BaseButton';
-import Tags from '../Tags';
-import BaseIcon from '../Icon/BaseIcon';
+import BaseButton from '@/js/components/buttons/BaseButton';
+import BaseIcon from '@/js/components/Icon/BaseIcon';
+import Tags from '@/js/components/Tags';
 
 const POPUP_WIDTH = 300;
 const POPUP_HEIGHT = 400;
 
 export default {
   name: 'Popup',
-  components: { BaseIcon, Tags, BaseButton },
+  components: { Tags, BaseIcon, BaseButton },
   props: {},
   data: () => ({
     element: {},

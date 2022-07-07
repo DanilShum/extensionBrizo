@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import { ResetPlugin } from '../../plugins/reset';
-import user from '../user';
-import deals from '../deals';
-import funnels from '../funnels';
+import { ResetPlugin } from '@/js/plugins/reset';
+import user from '@/js/stores/user';
+import deals from '@/js/stores/deals';
+import funnels from '@/js/stores/funnels';
 
 Vue.use(Vuex);
 

@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import MainView from './view/MainView';
 import { mapGetters, mapState } from 'vuex';
-import Spinner from './components/Spinner';
+import MainView from '@/js/view/MainView';
+import Spinner from '@/js/components/Spinner';
 export default {
   name: 'app',
   components: { Spinner, MainView },

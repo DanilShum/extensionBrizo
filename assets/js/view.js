@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import App from './App.vue';
-import { prototypeExtension } from './plugins/extension';
-import api from './plugins/axios';
-import store from './stores/view/store';
+import { prototypeExtension } from '@/js/plugins/extension';
+import api from '@/js/plugins/axios';
+import store from '@/js/stores/view/store';
+import App from '@/js/App';
 
 store.dispatch('user/setUser');
 

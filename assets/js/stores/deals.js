@@ -1,4 +1,4 @@
-import { createListStore } from '../helpers/create-list-store';
+import { createListStore } from '@/js/helpers/create-list-store';
 import Vue from 'vue';
 
 export default createListStore({
