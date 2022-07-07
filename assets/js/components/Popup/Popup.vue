@@ -5,17 +5,26 @@
     :class="{ 'brizo-extension-wrapper_hide': hideInspector }"
   >
     <div class="brizo-extension brizo-extension_inspector" :style="{ transform: translate }">
-      <header class="brizo-extension__header">
-        <div class="brizo-extension__drag" @mousedown="startDrag" />
-        <img
-          src="https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg"
-          alt="Лого"
+      <header class="brizo-extension__header" @mousedown="startDrag">
+        <div class="brizo-extension__header-logo">
+          <img
+            src="https://brizo.ru/images/tild6337-3637-4835-b063-383133316630__logo_shapka.svg"
+            alt="Лого"
+          />
+        </div>
+
+        <base-icon name="drag" />
+
+        <base-button
+          class="brizo-extension__close"
+          text="Close"
+          @mousedown.stop
+          @click.prevent.stop="closeInspector"
         />
-        <base-button text="Close" @click="closeInspector" />
       </header>
       <section class="brizo-extension__content">
         <div v-if="deals.length" class="brizo-extension__row">
-          <div class="brizo-extension__sub-title">Сделки для создания сделки:</div>
+          <div class="brizo-extension__sub-title">Созданные карточки:</div>
           <tags :items="deals.map((item) => item.name)" />
         </div>
         <div class="brizo-extension__row">
@@ -59,20 +68,19 @@
 import { mapMutations, mapState } from 'vuex';
 import BaseButton from '../buttons/BaseButton';
 import Tags from '../Tags';
+import BaseIcon from '../Icon/BaseIcon';
 
 const POPUP_WIDTH = 300;
 const POPUP_HEIGHT = 400;
-const POPUP_RIGHT = 100;
-const POPUP_TOP = 20;
 
 export default {
   name: 'Popup',
-  components: { Tags, BaseButton },
+  components: { BaseIcon, Tags, BaseButton },
   props: {},
   data: () => ({
     element: {},
-    y: 0,
-    x: 0,
+    offsetX: 0,
+    offsetY: 0,
     translate: `translate3d(0px,0px,0px)`,
     targetContent: '',
     selectStyle: {
@@ -164,6 +172,7 @@ export default {
       inspector.setAttribute('id', 'brizo-inspector');
       inspector.classList.add('brizo-inspector');
 
+      this.translate = `translate3d(calc(50vw - 50%),60px,0px)`;
       this.inspector = inspector;
     },
     appendInspectorElement() {
@@ -200,12 +209,10 @@ export default {
       this.targetContent = '';
     },
     startDrag(event) {
-      const { pageY, pageX, target } = event;
+      const { offsetX, offsetY, target } = event;
 
-      if (!this.y && !this.x) {
-        this.y = pageY;
-        this.x = pageX;
-      }
+      this.offsetY = offsetY;
+      this.offsetX = offsetX;
 
       if (target) {
         document.addEventListener('mousemove', this.dragMove);
@@ -220,20 +227,20 @@ export default {
       const { clientWidth, clientHeight } = document.documentElement;
 
       const dragX =
-        clientWidth > x + POPUP_WIDTH / 2
-          ? x < POPUP_WIDTH / 2
-            ? this.x - POPUP_WIDTH / 2
-            : this.x - x
-          : clientWidth - (this.x + (clientWidth - this.x + POPUP_RIGHT));
+        clientWidth > x + POPUP_WIDTH - this.offsetX
+          ? x < this.offsetX
+            ? 0
+            : x - this.offsetX
+          : clientWidth - POPUP_WIDTH;
 
       const dragY =
-        clientHeight > y + POPUP_HEIGHT
-          ? y < POPUP_TOP
-            ? this.y - POPUP_TOP
-            : this.y - y
-          : -(clientHeight - this.y - POPUP_HEIGHT + POPUP_TOP);
+        clientHeight > y + POPUP_HEIGHT - this.offsetY
+          ? y < this.offsetY
+            ? 0
+            : y - this.offsetY
+          : clientHeight - POPUP_HEIGHT;
 
-      this.translate = `translate3d(${-dragX}px,${-dragY}px,0px)`;
+      this.translate = `translate3d(${dragX}px,${dragY}px,0px)`;
     },
     dragFinish() {
       document.removeEventListener('mousemove', this.dragMove);
@@ -260,36 +267,37 @@ export default {
   box-sizing: border-box;
   height: 400px;
   background-color: white;
-  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);
+  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.27);
   border-radius: 5px;
   position: fixed;
-  top: 60px;
-  right: 100px;
+  top: 0;
+  left: 0;
   z-index: 1000;
   padding: 10px;
 }
 .brizo-extension__header {
   display: flex;
   justify-content: space-between;
+  margin: -10px -10px 0;
+  background-color: #f4f5f7;
+  cursor: grab;
+}
+.brizo-extension__header-logo {
+  width: 100%;
+  padding: 10px;
+}
+.brizo-extension__close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 .brizo-extension__content {
+  padding: 10px 0;
   height: calc(100% - 70px);
   overflow: auto;
 }
 .brizo-extension__actions {
   display: flex;
-}
-.brizo-extension__drag {
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: #e74c3c;
 }
 .brizo-inspector__select-wrapper {
   min-width: 150px;
