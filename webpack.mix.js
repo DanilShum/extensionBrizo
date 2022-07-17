@@ -1,5 +1,4 @@
 let mix = require('laravel-mix');
-const path = require(`path`);
 
 mix
   .setPublicPath('./')
@@ -12,10 +11,5 @@ mix
   .options({
     processCssUrls: false,
   })
-  .webpackConfig({
-    resolve: {
-      alias: {
-        '@': path.resolve('assets'),
-      },
-    },
-  });
+  .webpackConfig(require('./webpack.config'))
+  .vue();

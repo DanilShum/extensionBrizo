@@ -272,7 +272,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 10000;
   padding: 10px;
 }
 .brizo-extension__header {
@@ -307,15 +307,15 @@ export default {
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 999;
+  z-index: 9999;
   background-color: white;
-  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);
   border-radius: 5px;
 }
 .brizo-inspector__select {
   border: none;
   padding: 4px;
   width: 100%;
+  box-shadow: 0 4px 40px 3px rgba(0, 11, 34, 0.4);
 
   option {
     height: 24px;
