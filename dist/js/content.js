@@ -146,6 +146,10 @@ var createListStore = function createListStore(_ref) {
       del: function del(state, index) {
         state.list.splice(index, 1);
         _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+      },
+      clear: function clear() {
+        state.list = [];
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncClear();
       }
     }, mutations),
     actions: _objectSpread({
@@ -418,20 +422,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 case 3:
                   _yield$Vue$http$post = _context.sent;
                   data = _yield$Vue$http$post.data;
-                  state.deals.push(data);
                   return _context.abrupt("return", data);
 
-                case 9:
-                  _context.prev = 9;
+                case 8:
+                  _context.prev = 8;
                   _context.t0 = _context["catch"](0);
                   console.log(_context.t0);
 
-                case 12:
+                case 11:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[0, 9]]);
+          }, _callee, null, [[0, 8]]);
         }));
 
         return function (_x) {
@@ -491,7 +494,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     iconComponent: function iconComponent() {
-      var file = "".concat(this.name, ".svg"); // return require(`@/images/icons/${file}`).default;
+      var file = "".concat(this.name, ".svg"); // console.log(require(`@images/${file}`).default);
+      // return require(`@images/${file}`).default;
     }
   }
 });
@@ -874,7 +878,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".brizo-extension-wrapper_hide {\n  opacity: 0;\n}\n.brizo-extension-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-extension-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-extension {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.27);\n  border-radius: 5px;\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: 1000;\n  padding: 10px;\n}\n.brizo-extension__header {\n  display: flex;\n  justify-content: space-between;\n  margin: -10px -10px 0;\n  background-color: #f4f5f7;\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n.brizo-extension__header-logo {\n  width: 100%;\n  padding: 10px;\n}\n.brizo-extension__close {\n  position: absolute;\n  right: 10px;\n  top: 10px;\n}\n.brizo-extension__content {\n  padding: 10px 0;\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-extension__actions {\n  display: flex;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  max-height: 72px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 999;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.17);\n  border-radius: 5px;\n}\n.brizo-inspector__select {\n  border: none;\n  padding: 4px;\n  width: 100%;\n}\n.brizo-inspector__select option {\n  height: 24px;\n  display: flex;\n  align-items: center;\n}\n.brizo-inspector__select option:hover {\n  background-color: rgba(95, 108, 118, 0.05);\n}\n.brizo-extension__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-extension__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-extension__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".brizo-extension-wrapper_hide {\n  opacity: 0;\n}\n.brizo-extension-wrapper {\n  font-size: 12px;\n  color: #353d43;\n}\n.brizo-extension-wrapper * {\n  box-sizing: border-box;\n}\n.brizo-extension {\n  width: 300px;\n  box-sizing: border-box;\n  height: 400px;\n  background-color: white;\n  box-shadow: 0 9px 40px 3px rgba(0, 11, 34, 0.27);\n  border-radius: 5px;\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: 10000;\n  padding: 10px;\n}\n.brizo-extension__header {\n  display: flex;\n  justify-content: space-between;\n  margin: -10px -10px 0;\n  background-color: #f4f5f7;\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n.brizo-extension__header-logo {\n  width: 100%;\n  padding: 10px;\n}\n.brizo-extension__close {\n  position: absolute;\n  right: 10px;\n  top: 10px;\n}\n.brizo-extension__content {\n  padding: 10px 0;\n  height: calc(100% - 70px);\n  overflow: auto;\n}\n.brizo-extension__actions {\n  display: flex;\n}\n.brizo-inspector__select-wrapper {\n  min-width: 150px;\n  min-height: 80px;\n  max-height: 72px;\n  opacity: 0;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  z-index: 9999;\n  background-color: white;\n  border-radius: 5px;\n}\n.brizo-inspector__select {\n  border: none;\n  padding: 4px;\n  width: 100%;\n  box-shadow: 0 4px 40px 3px rgba(0, 11, 34, 0.4);\n}\n.brizo-inspector__select option {\n  height: 24px;\n  display: flex;\n  align-items: center;\n}\n.brizo-inspector__select option:hover {\n  background-color: rgba(95, 108, 118, 0.05);\n}\n.brizo-extension__row {\n  display: flex;\n  flex-direction: column;\n}\n.brizo-extension__sub-title {\n  color: #5f6c76;\n  font-size: 13px;\n  font-weight: 500;\n}\n.brizo-extension__tag {\n  display: inline-block;\n  min-height: 16px;\n  background-color: rgba(111, 111, 234, 0.1);\n  border-radius: 5px;\n  margin-bottom: 4px;\n  padding: 4px;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

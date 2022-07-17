@@ -17,8 +17,6 @@ export default createListStore({
             status_id: rootGetters['funnels/currentFunnel'].statuses[1].id,
           });
 
-          state.deals.push(data);
-
           return data;
         } catch (e) {
           console.log(e);

@@ -11,25 +11,29 @@
   "devDependencies": {
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/eslint-config-prettier": "^6.0.0",
-
+    "axios": "^0.21.1",
+    "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.3",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^6.2.2",
     "laravel-mix": "^6.0.11",
     "postcss": "^8.2.10",
+    "prettier": "^2.2.1",
     "sass": "^1.32.5",
     "sass-loader": "^10.1.1",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.6",
     "vue-template-compiler": "^2.6.12",
-    "vuex": "^3.4.0",
-    "axios": "^0.21.1",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^6.2.2",
-    "prettier": "^2.2.1"
+    "vuex": "^3.4.0"
   },
   "dependencies": {
-    "url-loader": "^4.1.1"
+    "babel-loader": "^8.2.5",
+    "file-loader": "^6.2.0",
+    "lodash-es": "^4.17.21",
+    "style-resources-loader": "^1.5.0",
+    "url-loader": "^4.1.1",
+    "vue-svg-loader": "^0.16.0"
   },
   "lint-staged": {
     "*": [
