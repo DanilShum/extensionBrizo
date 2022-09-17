@@ -6,7 +6,15 @@
         <div>{{ currentUser.name }}</div>
         <div>{{ currentUser.email }}</div>
       </div>
+      <base-button text="logout" @click="logout" />
     </div>
+
+    <base-input
+      :options="projects"
+      v-model="selectedProject"
+      label="project"
+      @select="setProject"
+    />
 
     <div class="profile__row">
       <div>Проект: {{ project.name }}</div>
@@ -23,20 +31,34 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import BaseButton from '@/js/components/buttons/BaseButton';
+import BaseInput from '@/js/components/inputs/BaseInput';
 
 export default {
   name: 'Profile',
+  components: { BaseInput, BaseButton },
+  data: (vm) => ({
+    selectedProject: vm.$store.getters['user/project'].name,
+  }),
   computed: {
     ...mapState('user', ['currentUser', 'unread_notifications_count']),
-    ...mapGetters('user', ['avatar', 'project']),
+    ...mapGetters('user', ['avatar', 'project', 'projects']),
     notificationsCount() {
       if (this.unread_notifications_count > 999) return '999+';
       if (this.unread_notifications_count <= 0) return 0;
       return this.unread_notifications_count;
     },
   },
-  methods: {},
+  methods: {
+    ...mapActions('user', ['logout', 'setUser']),
+    ...mapActions(['initialFetch']),
+    async setProject(e) {
+      console.log(e);
+      await this.setUser(e);
+      this.initialFetch();
+    },
+  },
 };
 </script>
 

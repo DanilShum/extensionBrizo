@@ -7,12 +7,11 @@
       @click="linkTo"
     />
 
-    <h1 class="title">Brizo CRM</h1>
-
     <spinner v-if="!user && pending" :size="50" style="padding: 25px" />
 
-    <main-view v-if="user" />
-    <div v-else>Вы не авторизированны</div>
+    <main-view v-else-if="user" />
+
+    <login v-else />
   </div>
 </template>
 
@@ -20,9 +19,10 @@
 import { mapGetters, mapState } from 'vuex';
 import MainView from '@/js/view/MainView';
 import Spinner from '@/js/components/Spinner';
+import Login from '@/js/view/auth/Login';
 export default {
   name: 'app',
-  components: { Spinner, MainView },
+  components: { Login, Spinner, MainView },
   computed: {
     ...mapGetters('user', ['user', 'isActive']),
     ...mapState('user', ['pending']),

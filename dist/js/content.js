@@ -147,7 +147,7 @@ var createListStore = function createListStore(_ref) {
         state.list.splice(index, 1);
         _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
       },
-      clear: function clear() {
+      clear: function clear(state) {
         state.list = [];
         _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncClear();
       }
