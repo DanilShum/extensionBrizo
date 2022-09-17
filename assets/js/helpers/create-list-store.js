@@ -47,7 +47,7 @@ export const createListStore = ({
       state.list.splice(index, 1);
       prototypeExtension.storageSyncSet({ [entity]: state.list });
     },
-    clear() {
+    clear(state) {
       state.list = [];
       prototypeExtension.storageSyncClear();
     },

@@ -22,17 +22,19 @@ export default {
     user: (state) => state.currentUser,
     isActive: (state, getters) => getters.user?.is_active,
     project: (state, getters) => getters.user?.project,
+    projects: (state, getters) => getters.user?.projects,
     avatar: (state, getters) => getters.user?.avatar_url,
     subDomain: (state, getters) => getters.project?.domain,
   },
   actions: {
-    async setUser({ commit }) {
+    async setUser({ commit }, project) {
       commit('set', { pending: true });
 
       try {
         const { data } = await Vue.http.get(`${ROUTE}/me`);
         commit('set', { currentUser: data });
-        commit('set', { route: `https://${data.project.domain}.${DOMAIN}` }, { root: true });
+        const domain = project?.domain || data.project.domain;
+        commit('set', { route: `https://${domain}.${DOMAIN}` }, { root: true });
       } finally {
         commit('set', { pending: false });
       }
@@ -63,6 +65,15 @@ export default {
       commit('set', {
         unread_notifications_count: data.unread_notifications_count,
       });
+    },
+    async login({ commit }, params) {
+      const res = await Vue.http.post('auth', params);
+      commit('set', { currentUser: res.data });
+      return res;
+    },
+    async logout({ commit }) {
+      await Vue.http.delete('auth');
+      commit('set', { currentUser: null });
     },
   },
 };
