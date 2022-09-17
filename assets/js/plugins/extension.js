@@ -9,7 +9,6 @@ export default class Extension {
   get storage() {
     return this.extension.storage;
   }
-
   get tabs() {
     return this.extension.tabs;
   }
@@ -35,6 +34,7 @@ export default class Extension {
       return console.log('runtimeSendMessage');
     });
   }
+
   runtimeOnMessage(callback) {
     this.runtime.onMessage.addListener(callback);
   }

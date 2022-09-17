@@ -2,26 +2,28 @@
   <div class="deals">
     СДЕЛКИ
     <div v-for="(deal, index) in deals" :key="index" class="deals__item">
-      <div>
+      <div class="deals__content">
         <p>Бюджет: {{ deal.budget }}</p>
         <p>Название: {{ deal.name }}</p>
         <p>Описание: {{ deal.description }}</p>
+        <status-picker />
       </div>
-      <base-button text="Убрать" @click="del(index)" />
+      <base-button class="deals__item__clear-button" text="Убрать" @click="del(index)" />
     </div>
 
-    <base-button v-if="deals.length" type="button" text="Создать сделки" @click="createDeals" />
+    <base-button v-if="deals.length" type="button" text="Создать сделки" @click="create" />
     <base-button type="button" text="Начать инспекцию" @click="inspection" />
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
-import BaseButton from '../../components/buttons/BaseButton';
+import BaseButton from '@/js/components/buttons/BaseButton';
+import StatusPicker from '@/js/components/StatusPicker';
 
 export default {
   name: 'Deals',
-  components: { BaseButton },
+  components: { StatusPicker, BaseButton },
   computed: {
     ...mapState({
       deals: (state) => state.deals.list,
@@ -42,6 +44,10 @@ export default {
 
       window.close();
     },
+    create() {
+      this.createDeals();
+      this.clear();
+    },
   },
 };
 </script>
@@ -50,12 +56,30 @@ export default {
 .deals {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 .deals__item {
+  position: relative;
+  width: 100%;
   display: flex;
   box-shadow: 0 4px 4px 1px rgba(0, 11, 34, 0.17);
   margin: 4px;
   border-radius: 5px;
   padding: 8px;
+  box-sizing: border-box;
+}
+.deals__content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .status-picker {
+    height: 50px;
+  }
+}
+.deals__item__clear-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>

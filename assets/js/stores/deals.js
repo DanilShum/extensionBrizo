@@ -1,4 +1,4 @@
-import { createListStore } from '../helpers/create-list-store';
+import { createListStore } from '@/js/helpers/create-list-store';
 import Vue from 'vue';
 
 export default createListStore({
@@ -16,8 +16,6 @@ export default createListStore({
             responsible_id: rootGetters['user/user'].id,
             status_id: rootGetters['funnels/currentFunnel'].statuses[1].id,
           });
-
-          state.deals.push(data);
 
           return data;
         } catch (e) {

@@ -1,9 +1,10 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import { ResetPlugin } from '../../plugins/reset';
-import user from '../user';
-import deals from '../deals';
-import funnels from '../funnels';
+import { ResetPlugin } from '@/js/plugins/reset';
+import user from '@/js/stores/user';
+import deals from '@/js/stores/deals';
+import funnels from '@/js/stores/funnels';
+import colors from '@/js/stores/colors';
 
 Vue.use(Vuex);
 
@@ -12,7 +13,7 @@ const DOMAIN = 'ozlaalfa.ru/api';
 
 const store = new Vuex.Store({
   plugins: [ResetPlugin],
-  modules: { user, deals, funnels },
+  modules: { user, deals, funnels, colors },
   state: {
     route: `https://${DOMAIN}`,
   },

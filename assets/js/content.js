@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import { prototypeExtension } from './plugins/extension';
-import store from './stores/content/store';
-import Popup from './components/Popup/Popup';
-import '../sass/styles.scss';
+import '@/sass/styles.scss';
+import Popup from '@/js/components/Popup/Popup';
+import { prototypeExtension } from '@/js/plugins/extension';
+import store from '@/js/stores/content/store';
 
 prototypeExtension.runtimeOnMessage(function (req, sender, response) {
   store.commit(`${req.entity}/set`, {

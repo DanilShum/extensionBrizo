@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { prototypeExtension } from '../plugins/extension';
+import { prototypeExtension } from '@/js/plugins/extension';
 
 /**
  * @param {Object<string, import('vuex').Module>} modules
@@ -46,6 +46,10 @@ export const createListStore = ({
     del(state, index) {
       state.list.splice(index, 1);
       prototypeExtension.storageSyncSet({ [entity]: state.list });
+    },
+    clear(state) {
+      state.list = [];
+      prototypeExtension.storageSyncClear();
     },
     ...mutations,
   },
