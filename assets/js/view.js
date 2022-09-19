@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { prototypeExtension } from '@/js/plugins/extension';
+import { instanceExtension } from '@/js/plugins/extension';
 import api from '@/js/plugins/axios';
 import store from '@/js/stores/view/store';
 import App from '@/js/App';
@@ -11,14 +11,14 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-prototypeExtension.storageSyncGet(['deals'], (params) => {
+instanceExtension.storageSyncGet(['deals'], (params) => {
   console.log(params, 'storageSyncGet');
   for (const key in params) {
     store.commit(`${key}/set`, { list: params[key] });
   }
 });
 
-prototypeExtension.storageSyncOnChanged(['deals'], (params) => {
+instanceExtension.storageSyncOnChanged(['deals'], (params) => {
   console.log(params, 'storageSyncOnChanged');
 
   for (const key in params) {
@@ -26,14 +26,14 @@ prototypeExtension.storageSyncOnChanged(['deals'], (params) => {
   }
 });
 
-prototypeExtension.runtimeOnMessage(function (params, sender, response) {
+instanceExtension.runtimeOnMessage(function (params, sender, response) {
   console.log(params, 'runtimeOnMessage');
   for (const key in params) {
     store.commit(`${key}/set`, { list: params[key] });
   }
 });
 
-Vue.prototype.$Extension = prototypeExtension;
+Vue.prototype.$Extension = instanceExtension;
 
 new Vue({
   el: '#app',

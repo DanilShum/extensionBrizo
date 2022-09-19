@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import '@/sass/styles.scss';
 import Popup from '@/js/components/Popup/Popup';
-import { prototypeExtension } from '@/js/plugins/extension';
+import { instanceExtension } from '@/js/plugins/extension';
 import store from '@/js/stores/content/store';
 
-prototypeExtension.runtimeOnMessage(function (req, sender, response) {
+instanceExtension.runtimeOnMessage(function (req, sender, response) {
   store.commit(`${req.entity}/set`, {
     list: req[req.entity],
   });
@@ -24,7 +24,7 @@ prototypeExtension.runtimeOnMessage(function (req, sender, response) {
 
     body.appendChild(brizoInner);
 
-    Vue.prototype.$Extension = prototypeExtension;
+    Vue.prototype.$Extension = instanceExtension;
 
     new Vue({
       el: '#brizo-extension',

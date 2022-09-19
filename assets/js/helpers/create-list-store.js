@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { prototypeExtension } from '@/js/plugins/extension';
+import { instanceExtension } from '@/js/plugins/extension';
 
 /**
  * @param {Object<string, import('vuex').Module>} modules
@@ -33,7 +33,7 @@ export const createListStore = ({
   mutations: {
     add(state, item) {
       state.list.push(item);
-      prototypeExtension.storageSyncSet({ [entity]: state.list });
+      instanceExtension.storageSyncSet({ [entity]: state.list });
     },
     past(state, { item, index }) {
       state.list.splice(index, 0, item);
@@ -45,11 +45,11 @@ export const createListStore = ({
     },
     del(state, index) {
       state.list.splice(index, 1);
-      prototypeExtension.storageSyncSet({ [entity]: state.list });
+      instanceExtension.storageSyncSet({ [entity]: state.list });
     },
     clear(state) {
       state.list = [];
-      prototypeExtension.storageSyncClear();
+      instanceExtension.storageSyncClear();
     },
     ...mutations,
   },

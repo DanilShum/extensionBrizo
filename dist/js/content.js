@@ -30,7 +30,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-_js_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension.runtimeOnMessage(function (req, sender, response) {
+_js_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.instanceExtension.runtimeOnMessage(function (req, sender, response) {
   _js_stores_content_store__WEBPACK_IMPORTED_MODULE_3__.default.commit("".concat(req.entity, "/set"), {
     list: req[req.entity]
   });
@@ -50,7 +50,7 @@ _js_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension.runtimeOnM
     var brizoInner = document.createElement('div');
     brizoInner.setAttribute('id', 'brizo-extension');
     body.appendChild(brizoInner);
-    vue__WEBPACK_IMPORTED_MODULE_4__.default.prototype.$Extension = _js_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.prototypeExtension;
+    vue__WEBPACK_IMPORTED_MODULE_4__.default.prototype.$Extension = _js_plugins_extension__WEBPACK_IMPORTED_MODULE_2__.instanceExtension;
     new vue__WEBPACK_IMPORTED_MODULE_4__.default({
       el: '#brizo-extension',
       store: _js_stores_content_store__WEBPACK_IMPORTED_MODULE_3__.default,
@@ -131,7 +131,7 @@ var createListStore = function createListStore(_ref) {
     mutations: _objectSpread({
       add: function add(state, item) {
         state.list.push(item);
-        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncSet(_defineProperty({}, entity, state.list));
       },
       past: function past(state, _ref2) {
         var item = _ref2.item,
@@ -145,11 +145,11 @@ var createListStore = function createListStore(_ref) {
       },
       del: function del(state, index) {
         state.list.splice(index, 1);
-        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncSet(_defineProperty({}, entity, state.list));
       },
       clear: function clear(state) {
         state.list = [];
-        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncClear();
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncClear();
       }
     }, mutations),
     actions: _objectSpread({
@@ -216,7 +216,7 @@ var createListStore = function createListStore(_ref) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => /* binding */ Extension,
-/* harmony export */   "prototypeExtension": () => /* binding */ prototypeExtension
+/* harmony export */   "instanceExtension": () => /* binding */ instanceExtension
 /* harmony export */ });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -283,6 +283,11 @@ var Extension = /*#__PURE__*/function () {
       this.tabs.create(params);
     }
   }, {
+    key: "getUrl",
+    value: function getUrl(url) {
+      return this.runtime.getURL(url);
+    }
+  }, {
     key: "runtime",
     get: function get() {
       return this.extension.runtime;
@@ -303,7 +308,7 @@ var Extension = /*#__PURE__*/function () {
 }();
 
 
-var prototypeExtension = new Extension();
+var instanceExtension = new Extension();
 
 /***/ }),
 
@@ -458,6 +463,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ });
+/* harmony import */ var _js_plugins_extension__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/js/plugins/extension */ "./assets/js/plugins/extension.js");
 //
 //
 //
@@ -472,6 +478,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'BaseIcon',
   props: {
@@ -493,9 +512,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    url: function url() {
+      var file = "".concat(this.name, ".svg");
+      return this.getUrl("/images/".concat(file));
+    },
     iconComponent: function iconComponent() {
-      var file = "".concat(this.name, ".svg"); // console.log(require(`@images/${file}`).default);
-      // return require(`@images/${file}`).default;
+      var file = "".concat(this.name, ".svg"); // console.log(require(`/images/${file}`).default);
+      // return require(`/images/${file}`).default;
+    }
+  },
+  methods: {
+    getUrl: function getUrl(url) {
+      return _js_plugins_extension__WEBPACK_IMPORTED_MODULE_0__.instanceExtension.getUrl(url);
     }
   }
 });
@@ -854,7 +882,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".brizo-base-icon {\n  flex-shrink: 0;\n}\n.brizo-base-icon.brizo-base-icon_default-color {\n  color: inherit;\n}\n.brizo-base-icon.brizo-base-icon_flip-x {\n  transform: scaleX(-1);\n}\n.brizo-base-icon.brizo-base-icon_flip-y {\n  transform: scaleY(-1);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".brizo-base-icon {\n  flex-shrink: 0;\n  width: 16px;\n  height: 16px;\n}\n.brizo-base-icon.brizo-base-icon_default-color {\n  color: inherit;\n}\n.brizo-base-icon.brizo-base-icon_flip-x {\n  transform: scaleX(-1);\n}\n.brizo-base-icon.brizo-base-icon_flip-y {\n  transform: scaleY(-1);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2544,20 +2572,45 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    _vm.iconComponent,
-    _vm._g(
-      {
-        tag: "component",
-        staticClass: "brizo-base-icon",
-        class: {
-          "brizo-base-icon_default-color": !_vm.color,
-          "brizo-base-icon_flip-x": _vm.flipX,
-          "brizo-base-icon_flip-y": _vm.flipY
-        },
-        style: { color: _vm.color || null }
-      },
-      _vm.$listeners
-    )
+    "div",
+    [
+      _c(
+        "div",
+        _vm._g(
+          {
+            staticClass: "brizo-base-icon",
+            class: {
+              "brizo-base-icon_default-color": !_vm.color,
+              "brizo-base-icon_flip-x": _vm.flipX,
+              "brizo-base-icon_flip-y": _vm.flipY
+            },
+            style: {
+              backgroundImage: "url(" + _vm.url + ")",
+              color: _vm.color || null
+            }
+          },
+          _vm.$listeners
+        )
+      ),
+      _vm._v(" "),
+      _c(
+        _vm.iconComponent,
+        _vm._g(
+          {
+            tag: "component",
+            staticClass: "base-icon",
+            class: {
+              "base-icon_default-color": !_vm.color,
+              "base-icon_flip-x": _vm.flipX,
+              "base-icon_flip-y": _vm.flipY
+            },
+            style: { color: _vm.color || null }
+          },
+          _vm.$listeners
+        )
+      )
+    ],
+    1
   )
 }
 var staticRenderFns = []

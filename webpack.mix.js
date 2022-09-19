@@ -7,7 +7,7 @@ mix
   .js('assets/js/background.js', 'dist/js')
   .js('assets/js/view.js', 'dist/js')
   .vue()
-  .copy('assets/images', 'dist/images')
+  .copy('images', 'dist/images')
   .options({
     processCssUrls: false,
   })
