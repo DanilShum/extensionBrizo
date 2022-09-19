@@ -2142,7 +2142,7 @@ var createListStore = function createListStore(_ref) {
     mutations: _objectSpread({
       add: function add(state, item) {
         state.list.push(item);
-        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncSet(_defineProperty({}, entity, state.list));
       },
       past: function past(state, _ref2) {
         var item = _ref2.item,
@@ -2156,11 +2156,11 @@ var createListStore = function createListStore(_ref) {
       },
       del: function del(state, index) {
         state.list.splice(index, 1);
-        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncSet(_defineProperty({}, entity, state.list));
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncSet(_defineProperty({}, entity, state.list));
       },
       clear: function clear(state) {
         state.list = [];
-        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncClear();
+        _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncClear();
       }
     }, mutations),
     actions: _objectSpread({
@@ -2415,7 +2415,7 @@ vue__WEBPACK_IMPORTED_MODULE_1__.default.http = api;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => /* binding */ Extension,
-/* harmony export */   "prototypeExtension": () => /* binding */ prototypeExtension
+/* harmony export */   "instanceExtension": () => /* binding */ instanceExtension
 /* harmony export */ });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2482,6 +2482,11 @@ var Extension = /*#__PURE__*/function () {
       this.tabs.create(params);
     }
   }, {
+    key: "getUrl",
+    value: function getUrl(url) {
+      return this.runtime.getURL(url);
+    }
+  }, {
     key: "runtime",
     get: function get() {
       return this.extension.runtime;
@@ -2502,7 +2507,7 @@ var Extension = /*#__PURE__*/function () {
 }();
 
 
-var prototypeExtension = new Extension();
+var instanceExtension = new Extension();
 
 /***/ }),
 
@@ -3080,7 +3085,7 @@ _js_plugins_axios__WEBPACK_IMPORTED_MODULE_2__.default.interceptors.request.use(
     return _ref.apply(this, arguments);
   };
 }());
-_js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncGet(['deals'], function (params) {
+_js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncGet(['deals'], function (params) {
   console.log(params, 'storageSyncGet');
 
   for (var key in params) {
@@ -3089,7 +3094,7 @@ _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyn
     });
   }
 });
-_js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyncOnChanged(['deals'], function (params) {
+_js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.storageSyncOnChanged(['deals'], function (params) {
   console.log(params, 'storageSyncOnChanged');
 
   for (var key in params) {
@@ -3098,7 +3103,7 @@ _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.storageSyn
     });
   }
 });
-_js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.runtimeOnMessage(function (params, sender, response) {
+_js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension.runtimeOnMessage(function (params, sender, response) {
   console.log(params, 'runtimeOnMessage');
 
   for (var key in params) {
@@ -3107,7 +3112,7 @@ _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension.runtimeOnM
     });
   }
 });
-vue__WEBPACK_IMPORTED_MODULE_5__.default.prototype.$Extension = _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.prototypeExtension;
+vue__WEBPACK_IMPORTED_MODULE_5__.default.prototype.$Extension = _js_plugins_extension__WEBPACK_IMPORTED_MODULE_1__.instanceExtension;
 new vue__WEBPACK_IMPORTED_MODULE_5__.default({
   el: '#app',
   store: _js_stores_view_store__WEBPACK_IMPORTED_MODULE_3__.default,
@@ -3583,6 +3588,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ });
+/* harmony import */ var _js_plugins_extension__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/js/plugins/extension */ "./assets/js/plugins/extension.js");
 //
 //
 //
@@ -3597,6 +3603,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'BaseIcon',
   props: {
@@ -3618,9 +3637,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    url: function url() {
+      var file = "".concat(this.name, ".svg");
+      return this.getUrl("/images/".concat(file));
+    },
     iconComponent: function iconComponent() {
-      var file = "".concat(this.name, ".svg"); // console.log(require(`@images/${file}`).default);
-      // return require(`@images/${file}`).default;
+      var file = "".concat(this.name, ".svg"); // console.log(require(`/images/${file}`).default);
+      // return require(`/images/${file}`).default;
+    }
+  },
+  methods: {
+    getUrl: function getUrl(url) {
+      return _js_plugins_extension__WEBPACK_IMPORTED_MODULE_0__.instanceExtension.getUrl(url);
     }
   }
 });
@@ -3740,9 +3768,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _js_components_buttons_BaseButton__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/js/components/buttons/BaseButton */ "./assets/js/components/buttons/BaseButton.vue");
 /* harmony import */ var _js_components_inputs_BaseInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/js/components/inputs/BaseInput */ "./assets/js/components/inputs/BaseInput.vue");
+/* harmony import */ var _js_components_Icon_BaseIcon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/js/components/Icon/BaseIcon */ "./assets/js/components/Icon/BaseIcon.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -3790,9 +3819,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Profile',
   components: {
+    BaseIcon: _js_components_Icon_BaseIcon__WEBPACK_IMPORTED_MODULE_3__.default,
     BaseInput: _js_components_inputs_BaseInput__WEBPACK_IMPORTED_MODULE_2__.default,
     BaseButton: _js_components_buttons_BaseButton__WEBPACK_IMPORTED_MODULE_1__.default
   },
@@ -3801,14 +3832,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       selectedProject: vm.$store.getters['user/project'].name
     };
   },
-  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapState)('user', ['currentUser', 'unread_notifications_count'])), (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapGetters)('user', ['avatar', 'project', 'projects'])), {}, {
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapState)('user', ['currentUser', 'unread_notifications_count'])), (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)('user', ['avatar', 'project', 'projects'])), {}, {
     notificationsCount: function notificationsCount() {
       if (this.unread_notifications_count > 999) return '999+';
       if (this.unread_notifications_count <= 0) return 0;
       return this.unread_notifications_count;
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)('user', ['logout', 'setUser'])), (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)(['initialFetch'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapActions)('user', ['logout', 'setUser'])), (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapActions)(['initialFetch'])), {}, {
     setProject: function setProject(e) {
       var _this = this;
 
@@ -3817,14 +3848,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                console.log(e);
-                _context.next = 3;
+                _context.next = 2;
                 return _this.setUser(e);
 
-              case 3:
+              case 2:
                 _this.initialFetch();
 
-              case 4:
+              case 3:
               case "end":
                 return _context.stop();
             }
@@ -5136,7 +5166,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".brizo-base-icon {\n  flex-shrink: 0;\n}\n.brizo-base-icon.brizo-base-icon_default-color {\n  color: inherit;\n}\n.brizo-base-icon.brizo-base-icon_flip-x {\n  transform: scaleX(-1);\n}\n.brizo-base-icon.brizo-base-icon_flip-y {\n  transform: scaleY(-1);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".brizo-base-icon {\n  flex-shrink: 0;\n  width: 16px;\n  height: 16px;\n}\n.brizo-base-icon.brizo-base-icon_default-color {\n  color: inherit;\n}\n.brizo-base-icon.brizo-base-icon_flip-x {\n  transform: scaleX(-1);\n}\n.brizo-base-icon.brizo-base-icon_flip-y {\n  transform: scaleY(-1);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -15397,20 +15427,45 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    _vm.iconComponent,
-    _vm._g(
-      {
-        tag: "component",
-        staticClass: "brizo-base-icon",
-        class: {
-          "brizo-base-icon_default-color": !_vm.color,
-          "brizo-base-icon_flip-x": _vm.flipX,
-          "brizo-base-icon_flip-y": _vm.flipY
-        },
-        style: { color: _vm.color || null }
-      },
-      _vm.$listeners
-    )
+    "div",
+    [
+      _c(
+        "div",
+        _vm._g(
+          {
+            staticClass: "brizo-base-icon",
+            class: {
+              "brizo-base-icon_default-color": !_vm.color,
+              "brizo-base-icon_flip-x": _vm.flipX,
+              "brizo-base-icon_flip-y": _vm.flipY
+            },
+            style: {
+              backgroundImage: "url(" + _vm.url + ")",
+              color: _vm.color || null
+            }
+          },
+          _vm.$listeners
+        )
+      ),
+      _vm._v(" "),
+      _c(
+        _vm.iconComponent,
+        _vm._g(
+          {
+            tag: "component",
+            staticClass: "base-icon",
+            class: {
+              "base-icon_default-color": !_vm.color,
+              "base-icon_flip-x": _vm.flipX,
+              "base-icon_flip-y": _vm.flipY
+            },
+            style: { color: _vm.color || null }
+          },
+          _vm.$listeners
+        )
+      )
+    ],
+    1
   )
 }
 var staticRenderFns = []
@@ -15548,8 +15603,9 @@ var render = function() {
                 })
               : _vm._e(),
             _vm._v(" "),
-            _c("img", { attrs: { src: "images/bell.svg", alt: "bell" } })
-          ]
+            _c("base-icon", { attrs: { name: "bell" } })
+          ],
+          1
         )
       ])
     ],

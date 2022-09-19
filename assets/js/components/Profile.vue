@@ -24,7 +24,7 @@
           class="profile__notifiaction__unread_counter"
           v-text="notificationsCount"
         />
-        <img src="images/bell.svg" alt="bell" />
+        <base-icon name="bell" />
       </button>
     </div>
   </div>
@@ -34,10 +34,11 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import BaseButton from '@/js/components/buttons/BaseButton';
 import BaseInput from '@/js/components/inputs/BaseInput';
+import BaseIcon from '@/js/components/Icon/BaseIcon';
 
 export default {
   name: 'Profile',
-  components: { BaseInput, BaseButton },
+  components: { BaseIcon, BaseInput, BaseButton },
   data: (vm) => ({
     selectedProject: vm.$store.getters['user/project'].name,
   }),
@@ -54,7 +55,6 @@ export default {
     ...mapActions('user', ['logout', 'setUser']),
     ...mapActions(['initialFetch']),
     async setProject(e) {
-      console.log(e);
       await this.setUser(e);
       this.initialFetch();
     },

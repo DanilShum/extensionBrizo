@@ -3,6 +3,9 @@
     "/dist/js/background.js": "/dist/js/background.js",
     "/dist/js/view.js": "/dist/js/view.js",
     "/dist/css/styles.css": "/dist/css/styles.css",
+    "/dist/images/angle-right.svg": "/dist/images/angle-right.svg",
+    "/dist/images/bell.svg": "/dist/images/bell.svg",
+    "/dist/images/drag.svg": "/dist/images/drag.svg",
     "/dist/images/favicon-16x16.png": "/dist/images/favicon-16x16.png",
     "/dist/images/favicon-192x192.png": "/dist/images/favicon-192x192.png",
     "/dist/images/favicon-32x32.png": "/dist/images/favicon-32x32.png"

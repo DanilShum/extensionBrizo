@@ -50,6 +50,10 @@ export default class Extension {
   tabCreate(params) {
     this.tabs.create(params);
   }
+
+  getUrl(url) {
+    return this.runtime.getURL(url);
+  }
 }
 
-export const prototypeExtension = new Extension();
+export const instanceExtension = new Extension();
